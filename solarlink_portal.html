@@ -321,12 +321,15 @@ textarea{resize:vertical;min-height:76px}
       <svg width="28" height="28" viewBox="0 0 100 100" fill="none"><path d="M50 8L88 38v46q0 4-4 4H16q-4 0-4-4V38Z" stroke="#3b8ed8" stroke-width="6" stroke-linejoin="round"/><path d="M28 48Q50 70 72 48Q60 56 28 48Z" fill="#3b8ed8"/></svg>
       <span style="font-size:18px;font-weight:700;color:var(--text)">SolarLink</span>
     </div>
-    <div style="font-size:17px;font-weight:700;color:var(--text);text-align:center;margin-bottom:3px">Welcome back</div>
+    <div style="font-size:17px;font-weight:700;color:var(--text);text-align:center;margin-bottom:3px" id="auth-title">Welcome back</div>
     <div style="font-size:12px;color:var(--text2);text-align:center;margin-bottom:18px">A solar connection you can finally trust</div>
-    <button class="lbtn l-gg" onclick="loginIn()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>Continue with Google</button>
+    <button class="lbtn l-gg" onclick="signInWithGoogle()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>Continue with Google</button>
     <div class="ldiv">or</div>
-    <button class="lbtn l-em" onclick="loginIn()">Sign in with Email / Phone</button>
-    <p style="text-align:center;font-size:11px;color:var(--text3);margin-top:10px">New partner? <a href="#" style="color:var(--blue);text-decoration:none" onclick="loginIn()">Join free →</a></p>
+    <div class="fg" style="margin-bottom:8px"><input id="auth-email" type="email" placeholder="Email address" style="font-size:13px"></div>
+    <div class="fg" style="margin-bottom:12px"><input id="auth-password" type="password" placeholder="Password" style="font-size:13px" onkeydown="if(event.key==='Enter')authSubmit()"></div>
+    <div id="auth-error" style="font-size:12px;color:#ef4444;text-align:center;margin-bottom:8px;display:none"></div>
+    <button class="lbtn l-em" onclick="authSubmit()" id="auth-btn">Sign In</button>
+    <p style="text-align:center;font-size:11px;color:var(--text3);margin-top:10px" id="auth-toggle">New partner? <a href="#" style="color:var(--blue);text-decoration:none" onclick="toggleAuthMode(event)">Create account →</a></p>
   </div>
 </div>
 
@@ -375,8 +378,9 @@ textarea{resize:vertical;min-height:76px}
 
   <div class="sb-bottom">
     <div class="sb-user">
-      <div class="uav">DL</div>
-      <div><div style="font-size:12px;font-weight:600;color:#fff">Daniel Lynch</div><div style="font-size:10px;color:var(--text3)">Referral Partner</div></div>
+      <div class="uav" id="sb-av">?</div>
+      <div style="flex:1"><div style="font-size:12px;font-weight:600;color:#fff" id="sb-name">Signing in...</div><div style="font-size:10px;color:var(--text3)">Referral Partner</div></div>
+      <div onclick="signOut()" title="Sign out" style="cursor:pointer;color:rgba(255,255,255,0.3);font-size:16px;padding:4px" title="Sign out">↩</div>
     </div>
   </div>
 </div>
@@ -1575,6 +1579,79 @@ function startTour(){ti=0;renderTour();document.getElementById('tour-ov').classL
 function renderTour(){var s=TOUR[ti];document.getElementById('tour-title').textContent=s.title;document.getElementById('tour-desc').textContent=s.desc;nav(s.s,null);var d=document.getElementById('tdots');d.innerHTML='';TOUR.forEach(function(_,i){var dt=document.createElement('div');dt.className='tdot'+(i===ti?' on':'');d.appendChild(dt);});}
 function nextTour(){ti++;if(ti>=TOUR.length)endTour();else renderTour();}
 function endTour(){document.getElementById('tour-ov').classList.remove('on');}
+
+// ── AUTH ──
+var authMode = 'signin';
+
+function toggleAuthMode(e) {
+  if(e)e.preventDefault();
+  authMode = authMode==='signin' ? 'signup' : 'signin';
+  document.getElementById('auth-title').textContent = authMode==='signin' ? 'Welcome back' : 'Create your account';
+  document.getElementById('auth-btn').textContent = authMode==='signin' ? 'Sign In' : 'Create Account';
+  document.getElementById('auth-toggle').innerHTML = authMode==='signin'
+    ? 'New partner? <a href="#" style="color:var(--blue);text-decoration:none" onclick="toggleAuthMode(event)">Create account →</a>'
+    : 'Already have an account? <a href="#" style="color:var(--blue);text-decoration:none" onclick="toggleAuthMode(event)">Sign in →</a>';
+  document.getElementById('auth-error').style.display='none';
+}
+
+function showAuthError(msg) {
+  var el = document.getElementById('auth-error');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+async function authSubmit() {
+  var email = document.getElementById('auth-email').value.trim();
+  var password = document.getElementById('auth-password').value;
+  if (!email || !password) { showAuthError('Please enter your email and password.'); return; }
+  document.getElementById('auth-btn').textContent = 'Please wait...';
+  document.getElementById('auth-error').style.display = 'none';
+  var res = authMode==='signin'
+    ? await db.auth.signInWithPassword({email, password})
+    : await db.auth.signUp({email, password});
+  if (res.error) {
+    showAuthError(res.error.message);
+    document.getElementById('auth-btn').textContent = authMode==='signin' ? 'Sign In' : 'Create Account';
+    return;
+  }
+  if (authMode==='signup' && !res.data.session) {
+    showAuthError('Check your email for a confirmation link.');
+    document.getElementById('auth-btn').textContent = 'Create Account';
+    return;
+  }
+  onSignIn(res.data.user || res.data.session?.user);
+}
+
+async function signInWithGoogle() {
+  var res = await db.auth.signInWithOAuth({provider:'google', options:{redirectTo: window.location.href}});
+  if (res.error) showAuthError('Google login failed. Check Supabase Google provider settings.');
+}
+
+async function signOut() {
+  await db.auth.signOut();
+  document.getElementById('login-ov').style.display='flex';
+  document.getElementById('login-ov').style.opacity='1';
+  document.getElementById('login-ov').style.transition='none';
+  document.getElementById('sb-name').textContent='Signing in...';
+  document.getElementById('sb-av').textContent='?';
+}
+
+function onSignIn(user) {
+  if (!user) return;
+  var l = document.getElementById('login-ov');
+  l.style.opacity='0'; l.style.transition='opacity .4s';
+  setTimeout(function(){l.style.display='none';}, 400);
+  var name = (user.user_metadata && user.user_metadata.full_name) || user.email || 'Partner';
+  var initials = name.split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2) || '?';
+  document.getElementById('sb-name').textContent = name;
+  document.getElementById('sb-av').textContent = initials;
+}
+
+// Check session on load
+db.auth.getSession().then(function(r){ if(r.data && r.data.session) onSignIn(r.data.session.user); });
+db.auth.onAuthStateChange(function(event, session){
+  if(event==='SIGNED_IN' && session) onSignIn(session.user);
+  if(event==='SIGNED_OUT'){ document.getElementById('login-ov').style.cssText='display:flex;opacity:1'; }
+});
 
 // ── CLIPBOARD ──
 function copyText(text) {
