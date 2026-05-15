@@ -772,15 +772,15 @@ textarea{resize:vertical;min-height:76px}
     <div class="pgs">Fill out what you know. Alex handles the rest — consultation, proposal, follow-up, and updates back to you at every stage.</div>
     <div class="ban ban-b"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/></svg>Your info is automatically attached — no need to enter your own details. After submitting you'll get the 3-way intro script to send.</div>
     <div class="card"><div class="ct">Homeowner Information</div>
-      <div class="fgr"><div class="fg"><label>First name <span class="req">*</span></label><input id="sub-fn" type="text" placeholder="Jane"></div><div class="fg"><label>Last name <span class="req">*</span></label><input type="text" placeholder="Doe"></div></div>
-      <div class="fgr"><div class="fg"><label>Phone <span class="req">*</span></label><input type="tel" placeholder="(555) 555-0123"></div><div class="fg"><label>Email</label><input type="email" placeholder="jane@email.com"></div></div>
-      <div class="fg"><label>Home address</label><input type="text" placeholder="Street, City, State, ZIP"></div>
-      <div class="fgr"><div class="fg"><label>Utility company</label><select><option>Select...</option><option>APS</option><option>SRP</option><option>FPL</option><option>Duke / TECO</option><option>Other</option></select></div><div class="fg"><label>Avg electric bill</label><input placeholder="$240"><div class="hint">$150+ = stronger candidate</div></div></div>
-      <div class="fgr"><div class="fg"><label>Owns home? <span class="req">*</span></label><select><option>Yes</option><option>No / Not sure</option></select></div><div class="fg"><label>Has solar already?</label><select><option>No</option><option>Yes</option><option>Not sure</option></select></div></div>
-      <div class="fgr"><div class="fg"><label>Interested in battery backup?</label><select><option>Unsure</option><option>Yes</option><option>No</option></select></div><div class="fg"><label>Best time to contact</label><select><option>Morning</option><option>Afternoon</option><option>Evening</option><option>Anytime</option></select></div></div>
-      <div class="fg"><label>Your relationship to them</label><select><option>Friend / family</option><option>Past client</option><option>Neighbor</option><option>Coworker</option><option>Business contact</option><option>Other</option></select></div>
+      <div class="fgr"><div class="fg"><label>First name <span class="req">*</span></label><input id="sub-fn" type="text" placeholder="Jane"></div><div class="fg"><label>Last name <span class="req">*</span></label><input id="sub-ln" type="text" placeholder="Doe"></div></div>
+      <div class="fgr"><div class="fg"><label>Phone <span class="req">*</span></label><input id="sub-phone" type="tel" placeholder="(555) 555-0123"></div><div class="fg"><label>Email</label><input id="sub-email" type="email" placeholder="jane@email.com"></div></div>
+      <div class="fg"><label>Home address</label><input id="sub-addr" type="text" placeholder="Street, City, State, ZIP"></div>
+      <div class="fgr"><div class="fg"><label>Utility company</label><select id="sub-utility"><option>Select...</option><option>APS</option><option>SRP</option><option>FPL</option><option>Duke / TECO</option><option>Other</option></select></div><div class="fg"><label>Avg electric bill</label><input id="sub-bill" placeholder="$240"><div class="hint">$150+ = stronger candidate</div></div></div>
+      <div class="fgr"><div class="fg"><label>Owns home? <span class="req">*</span></label><select id="sub-owns"><option>Yes</option><option>No / Not sure</option></select></div><div class="fg"><label>Has solar already?</label><select id="sub-solar"><option>No</option><option>Yes</option><option>Not sure</option></select></div></div>
+      <div class="fgr"><div class="fg"><label>Interested in battery backup?</label><select id="sub-battery"><option>Unsure</option><option>Yes</option><option>No</option></select></div><div class="fg"><label>Best time to contact</label><select id="sub-contact"><option>Morning</option><option>Afternoon</option><option>Evening</option><option>Anytime</option></select></div></div>
+      <div class="fg"><label>Your relationship to them</label><select id="sub-rel"><option>Friend / family</option><option>Past client</option><option>Neighbor</option><option>Coworker</option><option>Business contact</option><option>Other</option></select></div>
     </div>
-    <div class="card"><div class="ct">Notes for Alex</div><textarea placeholder="How you know them, why you think they'd be open, roof type, anything helpful for the first conversation..."></textarea></div>
+    <div class="card"><div class="ct">Notes for Alex</div><textarea id="sub-notes" placeholder="How you know them, why you think they'd be open, roof type, anything helpful for the first conversation..."></textarea></div>
     <div class="card"><div class="ct">Upload Utility Bill <span style="font-weight:400;color:var(--text3);font-size:10px;letter-spacing:0">(optional — helps size the system)</span></div>
       <div style="border:2px dashed var(--border);border-radius:10px;padding:22px;text-align:center;cursor:pointer" onclick="showToast('File upload ready')"><div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:2px">Click to upload or drag &amp; drop</div><div style="font-size:11px;color:var(--text3)">PDF, JPG, PNG · Max 10MB</div></div>
     </div>
@@ -1314,6 +1314,7 @@ textarea{resize:vertical;min-height:76px}
 
 <div id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 // ── DATA ──
 var LEADS=[
@@ -1324,6 +1325,76 @@ var LEADS=[
   {name:'Linda Park',loc:'Gilbert, AZ',date:'Apr 15',bdg:'b-blue',btxt:'Appt Scheduled',bill:'$270/mo',phone:'(480) 555-0789',addr:'555 Williams Field Rd',earn:'~$3,500',esub:'Est. 7.8 kW',tl:[{done:true,title:'Referral Submitted',time:'Apr 15'},{done:true,title:'Intro Sent',time:'Apr 15'},{done:true,title:'Appt Scheduled',time:'Apr 18',note:'Wed May 14 at 10 AM.'}],notes:['Mortgage client. High intent. — You · Apr 15']}
 ];
 
+// ── SUPABASE ──
+var db = supabase.createClient(
+  'https://ahjvgtjqgvrghxythudg.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFoanZndGpxZ3ZyZ2h4eXRodWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NTkwNTksImV4cCI6MjA5NDQzNTA1OX0.9mVHWAnSwR6P4OF4PdvKRSHCqVp_Xwr0Z1UDU5bhlSE'
+);
+var currentLeadId = null;
+
+async function loadLeads() {
+  var tbody = document.querySelector('#scr-track .rt tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text3)">Loading...</td></tr>';
+  var res = await db.from('leads').select('*').order('created_at', {ascending:false});
+  if (res.error || !res.data || res.data.length === 0) { renderDemoLeads(); return; }
+  tbody.innerHTML = res.data.map(function(l) {
+    var d = new Date(l.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    var name = l.first_name + (l.last_name ? ' '+l.last_name : '');
+    return '<tr onclick="openLeadById(\''+l.id+'\')"><td><div class="ln">'+name+'</div><div style="font-size:10px;color:var(--text3)">'+(l.address||'')+'</div></td><td>'+d+'</td><td><span class="badge b-yellow">'+l.status+'</span></td><td style="font-size:11px">Alex will contact soon</td><td>Alex J.</td><td style="font-weight:700;color:var(--amber)">~$3,200</td><td><div class="pb"><div class="pf" style="width:20%"></div></div></td></tr>';
+  }).join('');
+}
+
+function renderDemoLeads() {
+  var tbody = document.querySelector('#scr-track .rt tbody');
+  if (!tbody) return;
+  tbody.innerHTML = LEADS.map(function(l,i) {
+    return '<tr onclick="openLead('+i+')"><td><div class="ln">'+l.name+'</div><div style="font-size:10px;color:var(--text3)">'+l.loc+'</div></td><td>'+l.date+'</td><td><span class="badge '+l.bdg+'">'+l.btxt+'</span></td><td style="font-size:11px">See details</td><td>Alex J.</td><td style="font-weight:700;color:var(--amber)">'+l.earn+'</td><td><div class="pb"><div class="pf" style="width:55%"></div></div></td></tr>';
+  }).join('');
+}
+
+async function openLeadById(id) {
+  currentLeadId = id;
+  var res = await db.from('leads').select('*').eq('id',id).single();
+  if (res.error) { showToast('Error loading lead.'); return; }
+  var L = res.data;
+  var d = new Date(L.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  var name = L.first_name + (L.last_name ? ' '+L.last_name : '');
+  document.getElementById('d-bc').textContent = name;
+  document.getElementById('d-name').textContent = name;
+  var b = document.getElementById('d-badge'); b.className='badge b-yellow'; b.textContent=L.status;
+  document.getElementById('d-meta').textContent = 'Submitted '+d+' · '+(L.address||'');
+  document.getElementById('d-phone').textContent = L.phone||'—';
+  document.getElementById('d-addr').textContent = L.address||'—';
+  document.getElementById('d-bill').textContent = L.avg_bill||'—';
+  document.getElementById('d-earn').textContent = '~$3,200';
+  document.getElementById('d-esub').textContent = 'Estimated · Per agreement · Paid at install';
+  document.getElementById('intro-hw').textContent = L.first_name;
+  document.getElementById('intro-hw2').textContent = L.first_name;
+  var tl = document.getElementById('d-tl'); tl.innerHTML='';
+  [{done:true,title:'Referral Submitted',time:d},{done:false,title:'Alex Contacted Homeowner',time:'Pending'},{done:false,gray:true,title:'Solar Overview',time:'Not yet'},{done:false,gray:true,title:'Install',time:'Not yet'}].forEach(function(t){
+    var li=document.createElement('li');li.className='tli';
+    var dc=t.done?'td done':t.gray?'td gray':'td';
+    var ic=t.done?'<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>':'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/></svg>';
+    li.innerHTML='<div class="'+dc+'">'+ic+'</div><div><div class="tt"'+(t.gray?' style="color:var(--text3)"':'')+'>'+t.title+'</div><div class="ts">'+t.time+'</div></div>';
+    tl.appendChild(li);
+  });
+  await loadNotes(id);
+  nav('detail',null);
+}
+
+async function loadNotes(leadId) {
+  var nl = document.getElementById('d-notes'); nl.innerHTML='';
+  var res = await db.from('lead_notes').select('*').eq('lead_id',leadId).order('created_at',{ascending:true});
+  if (res.error || !res.data) return;
+  res.data.forEach(function(n) {
+    var d = document.createElement('div'); d.className='tn'; d.style.marginBottom='7px';
+    var date = new Date(n.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    d.textContent = n.content+' — '+n.author+' · '+date;
+    nl.appendChild(d);
+  });
+}
+
 var SM={welcome:'scr-welcome',dashboard:'scr-dashboard',starthere:'scr-starthere',bdp:'scr-bdp',dsp:'scr-dsp',whysolar:'scr-whysolar',book:'scr-book',submit:'scr-submit',track:'scr-track',detail:'scr-detail',intro:'scr-intro',commissions:'scr-commissions',scripts:'scr-scripts',ai:'scr-ai',links:'scr-links',marketing:'scr-marketing',network:'scr-network',earnings:'scr-earnings',help:'scr-help',agency:'scr-agency',homeowner:'scr-homeowner',giftcard:'scr-giftcard',partner:'scr-partner',sms:'scr-sms'};
 
 function nav(id,el){
@@ -1333,6 +1404,7 @@ function nav(id,el){
   if(el&&el.classList)el.classList.add('on');
   document.getElementById('main').scrollTop=0;
   var bd=document.getElementById('bdrop');if(bd)bd.classList.remove('on');
+  if(id==='track')loadLeads();
 }
 
 function loginIn(){
@@ -1367,8 +1439,41 @@ function openLead(i){
   nav('detail',null);
 }
 
-function addNote(){var ta=document.getElementById('new-note');var t=ta.value.trim();if(!t)return;var nl=document.getElementById('d-notes');var d=document.createElement('div');d.className='tn';d.style.marginBottom='7px';d.textContent=t+' — You · Just now';nl.appendChild(d);ta.value='';showToast('Note added.');}
-function submitLead(){var n=document.getElementById('sub-fn').value.trim()||'New Homeowner';showToast('Referral submitted for '+n+'! Send the 3-way intro next.');setTimeout(function(){nav('intro',null);},500);}
+async function addNote(){
+  var ta=document.getElementById('new-note');var t=ta.value.trim();if(!t)return;
+  if(currentLeadId){
+    var res=await db.from('lead_notes').insert({lead_id:currentLeadId,content:t,author:'You'});
+    if(res.error){showToast('Error saving note.');return;}
+    await loadNotes(currentLeadId);
+  } else {
+    var nl=document.getElementById('d-notes');var d=document.createElement('div');d.className='tn';d.style.marginBottom='7px';d.textContent=t+' — You · Just now';nl.appendChild(d);
+  }
+  ta.value='';showToast('Note added.');
+}
+async function submitLead(){
+  var fn=document.getElementById('sub-fn').value.trim();
+  var ln=document.getElementById('sub-ln').value.trim();
+  var phone=document.getElementById('sub-phone').value.trim();
+  if(!fn||!phone){showToast('First name and phone are required.');return;}
+  var res=await db.from('leads').insert({
+    first_name:fn,last_name:ln,
+    phone:phone,
+    email:document.getElementById('sub-email').value.trim(),
+    address:document.getElementById('sub-addr').value.trim(),
+    utility_company:document.getElementById('sub-utility').value,
+    avg_bill:document.getElementById('sub-bill').value.trim(),
+    owns_home:document.getElementById('sub-owns').value,
+    has_solar:document.getElementById('sub-solar').value,
+    battery_interest:document.getElementById('sub-battery').value,
+    best_contact_time:document.getElementById('sub-contact').value,
+    relationship:document.getElementById('sub-rel').value,
+    notes_for_alex:document.getElementById('sub-notes').value.trim(),
+    partner_name:'Daniel Lynch',status:'Submitted'
+  });
+  if(res.error){showToast('Error submitting. Please try again.');console.error(res.error);return;}
+  showToast('Referral submitted for '+fn+'! Send the 3-way intro next.');
+  setTimeout(function(){nav('intro',null);},500);
+}
 function toggleCb(el){if(!el.classList){showToast('Step marked complete!');return;}var dn=el.classList.toggle('dn');el.innerHTML=dn?'<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>':'';var lb=el.parentElement.querySelector('.cl');if(lb)lb.classList.toggle('dn',dn);}
 function toggleStep(id){var b=document.getElementById(id).querySelector('.ob-body');if(b)b.style.display=b.style.display==='none'?'block':'';}
 function toggleBell(){document.getElementById('bdrop').classList.toggle('on');}
