@@ -1,0 +1,16 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backups / archives
+*.bak
+*.orig
+*.tmp
+
+# Local-only test files
+__local__/
+scratch/

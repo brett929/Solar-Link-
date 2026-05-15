@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SolarLink Partner Portal</title>
+<style>
+:root{
+--navy:#0f1b2d;--navy2:#1a2942;--navy3:#243554;
+--blue:#3b8ed8;--blue2:#2c7bbf;--blue3:#5aa4e0;--pale:#e8f3fc;--pale2:#f0f7fd;
+--yellow:#facc15;--yellow2:#eab308;
+--bg:#f1f5f9;--white:#fff;--border:#e2e8f0;--border2:#f1f5f9;
+--text:#0f172a;--text2:#475569;--text3:#94a3b8;
+--green:#10b981;--gbg:#ecfdf5;--gtext:#065f46;
+--amber:#f59e0b;--abg:#fffbeb;--atext:#92400e;
+--red:#ef4444;--rbg:#fef2f2;--rtext:#991b1b;
+--purple:#7c3aed;--pbg:#f5f3ff;--ptext:#5b21b6;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{background:var(--bg);color:var(--text);height:100vh;display:flex;overflow:hidden;font-size:14px}
+
+/* SIDEBAR */
+.sb{width:228px;min-width:228px;background:var(--navy);display:flex;flex-direction:column;height:100vh;overflow-y:auto}
+.sb::-webkit-scrollbar{width:0}
+.sb-logo{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:9px;cursor:pointer}
+.sb-logo span{font-size:16px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.sb-sect{padding:12px 14px 3px;font-size:9px;font-weight:700;color:rgba(255,255,255,0.25);letter-spacing:1.5px;text-transform:uppercase}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 12px;margin:1px 6px;border-radius:7px;cursor:pointer;font-size:12.5px;color:rgba(255,255,255,0.55);transition:all .15s}
+.ni:hover{background:rgba(255,255,255,0.07);color:#fff}
+.ni.on{background:rgba(59,142,216,0.2);color:var(--blue3)}
+.ni svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;flex-shrink:0}
+.ni-badge{background:var(--yellow);color:var(--navy);font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;margin-left:auto}
+.ni-dot{width:7px;height:7px;border-radius:50%;background:var(--green);margin-left:auto;flex-shrink:0}
+.sb-bottom{margin-top:auto;padding:10px;border-top:1px solid rgba(255,255,255,0.08)}
+.sb-user{display:flex;align-items:center;gap:8px;padding:5px}
+.uav{width:30px;height:30px;border-radius:50%;background:var(--blue2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;background:var(--bg);position:relative}
+.scr{display:none;min-height:100%}.scr.on{display:block}
+.tbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 22px;height:46px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
+.bc{font-size:12px;color:var(--text2)}.bc b{color:var(--text);font-weight:600}
+.tbar-r{display:flex;align-items:center;gap:10px}
+.bell{position:relative;cursor:pointer}.bell svg{width:17px;height:17px;fill:none;stroke:var(--text2);stroke-width:2}
+.bell-dot{position:absolute;top:-2px;right:-2px;width:7px;height:7px;background:var(--red);border-radius:50%;border:1.5px solid var(--white)}
+.bdrop{position:absolute;top:28px;right:0;width:280px;background:var(--white);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:50;display:none}
+.bdrop.on{display:block}
+.bdrop-hd{padding:9px 13px;font-size:11px;font-weight:700;border-bottom:1px solid var(--border)}
+.bni{padding:9px 13px;border-bottom:1px solid #f8fafc;font-size:12px;color:var(--text2);line-height:1.5;cursor:pointer}
+.bni:hover{background:#f8fafc}.bni b{color:var(--text)}
+.bni-t{font-size:10px;color:var(--text3);margin-top:2px}
+.pc{padding:22px 26px}
+.pgt{font-size:21px;font-weight:700;color:var(--text);margin-bottom:3px;font-family:Georgia,serif;letter-spacing:-.3px}
+.pgs{font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.6}
+
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:14px}
+.ct{font-size:10px;font-weight:700;color:var(--blue);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.st{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.sl{font-size:11px;color:var(--text2);margin-bottom:3px}
+.sv{font-size:20px;font-weight:700;color:var(--text)}
+.ss{font-size:10px;color:var(--green);margin-top:2px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+
+/* FORMS */
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+label{font-size:11px;font-weight:500;color:var(--text2)}
+.req{color:var(--red)}
+input,select,textarea{border:1px solid var(--border);border-radius:8px;padding:8px 11px;font-size:13px;color:var(--text);background:var(--white);width:100%;outline:none;font-family:inherit}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,142,216,.1)}
+textarea{resize:vertical;min-height:76px}
+.fgr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hint{font-size:10px;color:var(--text3)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.bp{background:var(--blue);color:#fff}.bp:hover{background:var(--blue2)}
+.by{background:var(--yellow);color:var(--navy)}.by:hover{background:var(--yellow2)}
+.bg{background:var(--white);color:var(--text);border:1px solid var(--border)}.bg:hover{background:#f8fafc}
+.bn2{background:var(--gbg);color:var(--gtext);border:1px solid #a7f3d0}
+.bpu{background:var(--pbg);color:var(--ptext);border:1px solid #c4b5fd}
+.bsm{padding:5px 11px;font-size:12px}
+.bfl{width:100%;justify-content:center}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.b-blue{background:var(--pale);color:var(--blue2)}
+.b-green{background:var(--gbg);color:var(--gtext)}
+.b-yellow{background:var(--abg);color:var(--atext)}
+.b-gray{background:#f1f5f9;color:#475569}
+.b-red{background:var(--rbg);color:var(--rtext)}
+.b-purple{background:var(--pbg);color:var(--ptext)}
+
+/* BANNERS */
+.ban{border-radius:10px;padding:10px 13px;margin-bottom:13px;font-size:12.5px;line-height:1.55;display:flex;gap:9px}
+.ban svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;flex-shrink:0;margin-top:2px}
+.ban-b{background:var(--pale);border:1px solid #bcdcf3;color:var(--blue2)}
+.ban-y{background:var(--abg);border:1px solid #fde68a;color:var(--atext)}
+.ban-g{background:var(--gbg);border:1px solid #a7f3d0;color:var(--gtext)}
+.ban-n{background:rgba(15,27,45,.05);border:1px solid rgba(15,27,45,.12);color:var(--navy)}
+
+/* TIMELINE */
+.tl{list-style:none;padding:0}
+.tli{display:flex;gap:10px;padding-bottom:14px;position:relative}
+.tli::before{content:'';position:absolute;left:11px;top:24px;bottom:0;width:1px;background:var(--border)}
+.tli:last-child::before{display:none}
+.td{width:24px;height:24px;border-radius:50%;border:2px solid var(--blue);background:var(--pale);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.td svg{width:10px;height:10px;fill:none;stroke:var(--blue);stroke-width:2.5}
+.td.done{background:var(--blue)}.td.done svg{stroke:#fff}
+.td.gray{border-color:#cbd5e1;background:#f8fafc}.td.gray svg{stroke:var(--text3)}
+.td.green{background:var(--green);border-color:var(--green)}.td.green svg{stroke:#fff}
+.tt{font-size:12.5px;font-weight:600;color:var(--text)}
+.ts{font-size:10px;color:var(--text3);margin-top:1px}
+.tn{font-size:11.5px;color:var(--text2);margin-top:4px;background:#f8fafc;border-radius:6px;padding:6px 9px;border-left:2px solid var(--border);line-height:1.5}
+
+/* PEOPLE CARDS */
+.person-card{background:var(--navy);border-radius:14px;padding:18px;color:#fff;margin-bottom:14px}
+.person-av{width:52px;height:52px;border-radius:50%;background:var(--blue2);border:3px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:#fff;flex-shrink:0}
+.person-av.bdp-av{background:#7c3aed}
+.person-name{font-size:15px;font-weight:700;margin-bottom:2px}
+.person-role{font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:7px}
+.person-actions{display:flex;gap:6px;flex-wrap:wrap}
+.pa{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);color:#fff;padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:500}
+.pa:hover{background:rgba(255,255,255,0.2)}
+
+/* ONBOARDING STEPS */
+.ob-step{background:var(--white);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;transition:all .2s}
+.ob-step.active{border-color:var(--blue)}
+.ob-step.complete{border-color:var(--green)}
+.ob-hd{padding:12px 18px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.ob-num{width:26px;height:26px;border-radius:50%;background:var(--border);color:var(--text2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ob-step.active .ob-num{background:var(--blue);color:#fff}
+.ob-step.complete .ob-num{background:var(--green);color:#fff}
+.ob-title{font-size:13px;font-weight:700;color:var(--text)}
+.ob-sub{font-size:11px;color:var(--text2)}
+.ob-status{margin-left:auto;flex-shrink:0}
+.ob-body{padding:0 18px 16px}
+
+/* SCRIPT CARDS */
+.script-box{background:var(--navy);border-radius:10px;padding:12px;color:#fff;font-size:12px;line-height:1.7;position:relative;margin-bottom:8px}
+.sc-c{position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.7);padding:3px 8px;border-radius:5px;font-size:11px;cursor:pointer}
+.sc-c:hover{background:rgba(255,255,255,0.2);color:#fff}
+.sh{color:var(--yellow);font-weight:700}
+.script-cat{border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.script-cat-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+
+/* STATUS PIPELINE */
+.status-pipe{display:flex;gap:0;overflow-x:auto;margin-bottom:16px;padding-bottom:4px}
+.sp-item{flex-shrink:0;display:flex;align-items:center;gap:0}
+.sp-label{background:var(--pale);color:var(--blue2);font-size:10px;font-weight:600;padding:4px 10px;border-radius:4px;white-space:nowrap;cursor:pointer}
+.sp-label.active{background:var(--blue);color:#fff}
+.sp-label.done{background:var(--gbg);color:var(--gtext)}
+.sp-arrow{color:var(--text3);font-size:12px;padding:0 3px}
+
+/* REFERRAL TABLE */
+.rt{width:100%;border-collapse:collapse}
+.rt th{text-align:left;font-size:10px;font-weight:700;color:var(--text2);padding:8px 12px;border-bottom:1px solid var(--border);background:#f8fafc}
+.rt td{padding:10px 12px;border-bottom:1px solid #f8fafc;font-size:12.5px;color:var(--text2);vertical-align:middle}
+.rt tr:hover td{background:#f8fafc;cursor:pointer}
+.ln{font-weight:700;color:var(--text)}
+.pb{background:#e2e8f0;border-radius:4px;height:4px;overflow:hidden;width:70px}
+.pf{height:100%;border-radius:4px;background:var(--blue)}
+
+/* LINK BOX */
+.lbox{background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:8px 11px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}
+.lurl{font-size:12px;color:var(--blue);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cbtn{background:var(--pale);border:none;color:var(--blue);padding:4px 9px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer}
+.cbtn:hover{background:#d4e8f7}
+
+/* CHECKLIST */
+.chk{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid #f8fafc}
+.chk:last-child{border-bottom:none}
+.cb{width:18px;height:18px;border-radius:5px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;margin-top:1px}
+.cb.dn{background:var(--blue);border-color:var(--blue)}
+.cb svg{width:10px;height:10px;fill:none;stroke:#fff;stroke-width:3}
+.cl{font-size:12.5px;color:var(--text);line-height:1.4}
+.cl.dn{text-decoration:line-through;color:var(--text3)}
+
+/* NETWORK CONTACT */
+.nc{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f8fafc}
+.nc:last-child{border-bottom:none}
+.nc-av{width:32px;height:32px;border-radius:50%;background:var(--pale);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--blue2);flex-shrink:0}
+.nc-name{font-size:13px;font-weight:600;color:var(--text)}
+.nc-rel{font-size:11px;color:var(--text3)}
+.nc-status{margin-left:auto}
+
+/* STEPS PROGRESS */
+.step-prog{display:flex;margin-bottom:20px;gap:0}
+.spi{flex:1;text-align:center;position:relative}
+.spi::after{content:'';position:absolute;top:11px;left:50%;width:100%;height:2px;background:var(--border);z-index:0}
+.spi:last-child::after{display:none}
+.spi.dn::after{background:var(--blue)}
+.sp-c{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text2);margin:0 auto 4px;position:relative;z-index:1}
+.spi.dn .sp-c{background:var(--blue);border-color:var(--blue);color:#fff}
+.spi.ac .sp-c{border-color:var(--blue);color:var(--blue)}
+.sp-l{font-size:9px;color:var(--text2);line-height:1.3}
+.spi.ac .sp-l{color:var(--blue);font-weight:700}
+
+/* MODULES */
+.mod{border:1px solid var(--border);border-radius:9px;padding:10px 14px;margin-bottom:7px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .15s}
+.mod:hover{background:#f8fafc;border-color:var(--blue)}
+.mi{width:30px;height:30px;background:var(--pale);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mi svg{width:14px;height:14px;fill:none;stroke:var(--blue);stroke-width:2}
+
+/* WELCOME SCREEN */
+.welcome-bg{background:linear-gradient(160deg,var(--navy) 0%,#0d2540 55%,var(--navy2) 100%);min-height:100vh;padding:36px 24px;display:flex;flex-direction:column;align-items:center}
+.wlc-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px}
+.wlc-logo span{font-size:22px;font-weight:700;color:#fff}
+.wlc-tag{font-size:11px;font-weight:600;color:var(--blue3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;text-align:center}
+.wlc-h1{font-size:28px;font-weight:700;color:#fff;text-align:center;line-height:1.25;margin-bottom:10px;font-family:Georgia,serif;max-width:500px}
+.wlc-sub{font-size:14px;color:rgba(255,255,255,0.6);text-align:center;margin-bottom:26px;line-height:1.7;max-width:440px}
+.yt-wrap{width:100%;max-width:540px;border-radius:14px;overflow:hidden;margin-bottom:28px;border:1px solid rgba(255,255,255,0.1)}
+.yt-wrap iframe{width:100%;height:300px;display:block;border:none}
+.wlc-actions{width:100%;max-width:540px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.wlc-btn{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);border-radius:12px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .2s}
+.wlc-btn:hover{background:rgba(255,255,255,0.13);border-color:rgba(255,255,255,0.3);transform:translateY(-2px)}
+.wlc-btn.primary{background:var(--blue);border-color:var(--blue)}
+.wlc-btn.primary:hover{background:var(--blue2)}
+.wlc-btn-icon{font-size:22px;margin-bottom:8px}
+.wlc-btn-t{font-size:12px;font-weight:700;color:#fff;line-height:1.3}
+.wlc-btn-s{font-size:10.5px;color:rgba(255,255,255,0.5);margin-top:3px;line-height:1.4}
+.wlc-secondary{width:100%;max-width:540px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
+.wlc-s-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;text-align:center;cursor:pointer;font-size:12px;color:rgba(255,255,255,0.7);transition:all .15s}
+.wlc-s-btn:hover{background:rgba(255,255,255,0.1);color:#fff}
+.wlc-skip{font-size:12px;color:rgba(255,255,255,0.3);cursor:pointer;text-decoration:underline}
+.wlc-skip:hover{color:rgba(255,255,255,0.6)}
+
+/* NBA CARD */
+.nba{background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 100%);border-radius:12px;padding:14px 18px;color:#fff;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.nba-l .nba-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:4px}
+.nba-l .nba-text{font-size:14px;font-weight:700}
+.nba-l .nba-sub{font-size:11.5px;color:rgba(255,255,255,0.7);margin-top:3px}
+
+/* SHARE BAR */
+.share-bar{background:linear-gradient(90deg,var(--blue) 0%,var(--blue2) 100%);border-radius:10px;padding:11px 16px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.share-btn{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;padding:5px 9px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:600}
+.share-btn:hover{background:rgba(255,255,255,0.25)}
+
+/* ACC */
+.acc{border:1px solid var(--border);border-radius:9px;margin-bottom:7px;overflow:hidden}
+.acc-q{padding:11px 13px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:#f8fafc}
+.acc-q:hover{background:#f1f5f9}
+.acc-a{padding:11px 14px;font-size:12.5px;color:var(--text2);line-height:1.7;display:none;border-top:1px solid var(--border)}
+.acc.on .acc-a{display:block}
+.acc-ic{font-size:14px;color:var(--blue);transition:transform .2s}
+.acc.on .acc-ic{transform:rotate(45deg)}
+
+/* PUBLIC */
+.pub-nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;height:50px;display:flex;align-items:center;gap:10px}
+.pub-hero{background:linear-gradient(180deg,var(--navy) 0%,var(--navy2) 100%);padding:46px 26px;text-align:center}
+.pub-hero h1{color:#fff;font-size:24px;font-weight:700;margin-bottom:7px;line-height:1.3;font-family:Georgia,serif}
+.pub-hero p{color:rgba(255,255,255,0.6);font-size:13.5px;max-width:440px;margin:0 auto 20px;line-height:1.7}
+.pub-fc{background:var(--white);border-radius:13px;padding:20px;max-width:400px;margin:0 auto}
+
+/* SUNNY */
+.sunny-fab{position:fixed;bottom:18px;right:18px;width:46px;height:46px;background:var(--navy);border:2px solid var(--yellow);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:300}
+.sunny-fab svg{width:20px;height:20px;fill:none;stroke:var(--yellow);stroke-width:2}
+.sun-dot{position:absolute;top:-3px;right:-3px;width:13px;height:13px;background:var(--red);border-radius:50%;border:2px solid var(--white);font-size:8px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+.sun-panel{position:fixed;bottom:72px;right:18px;width:300px;background:var(--white);border-radius:14px;border:1px solid var(--border);z-index:300;display:none;flex-direction:column;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.12)}
+.sun-panel.on{display:flex}
+.sun-hd{background:var(--navy);padding:10px 13px;display:flex;align-items:center;gap:9px}
+.sun-av{width:28px;height:28px;border-radius:50%;background:var(--yellow);display:flex;align-items:center;justify-content:center}
+.sun-av svg{width:13px;height:13px;fill:none;stroke:var(--navy);stroke-width:2}
+.sun-nm{color:#fff;font-size:13px;font-weight:700}
+.sun-st{color:rgba(255,255,255,0.45);font-size:10px}
+.sun-x{margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:18px}
+.sun-msgs{padding:11px;display:flex;flex-direction:column;gap:8px;height:230px;overflow-y:auto}
+.msg{max-width:88%;font-size:12px;line-height:1.5}
+.msg-s{background:#f1f5f9;border-radius:10px 10px 10px 2px;padding:8px 11px;color:var(--text2);align-self:flex-start}
+.msg-u{background:var(--blue);border-radius:10px 10px 2px 10px;padding:8px 11px;color:#fff;align-self:flex-end}
+.typ{display:flex;gap:4px;padding:8px 11px;align-self:flex-start}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--text3);animation:bounce 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.chips{display:flex;flex-wrap:wrap;gap:4px;padding:0 11px 7px}
+.chip{background:var(--pale);border:1px solid #bcdcf3;color:var(--blue2);border-radius:20px;padding:3px 9px;font-size:11px;cursor:pointer}
+.sun-inp-row{padding:7px 11px;border-top:1px solid var(--border);display:flex;gap:6px}
+.sun-inp{flex:1;border:1px solid var(--border);border-radius:20px;padding:5px 10px;font-size:12px;outline:none}
+.sun-send{background:var(--blue);border:none;color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* TOUR */
+.tour-ov{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:400;display:none;align-items:flex-end;justify-content:center;padding-bottom:28px}
+.tour-ov.on{display:flex}
+.tour-card{background:var(--white);border-radius:13px;padding:18px 22px;max-width:340px;width:100%;text-align:center}
+.tdots{display:flex;gap:4px;justify-content:center;margin-bottom:10px}
+.tdot{width:6px;height:6px;border-radius:50%;background:var(--border)}.tdot.on{background:var(--blue)}
+
+/* LOGIN */
+#login-ov{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:500}
+.lcard{background:var(--white);border-radius:14px;padding:32px;width:340px}
+.llogo{display:flex;align-items:center;gap:9px;justify-content:center;margin-bottom:18px}
+.lbtn{width:100%;padding:10px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit}
+.l-gg{background:var(--white);color:var(--text);border:1.5px solid var(--border)}.l-em{background:var(--blue);color:#fff}
+.ldiv{text-align:center;font-size:11px;color:var(--text3);margin:10px 0;position:relative}
+.ldiv::before,.ldiv::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:var(--border)}
+.ldiv::before{left:0}.ldiv::after{right:0}
+
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--navy);color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;transition:transform .3s;z-index:999;pointer-events:none}
+
+/* PTABS */
+.ptab{display:inline-flex;padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;color:var(--text2);margin-right:5px;margin-bottom:5px}
+.ptab.on{border-color:var(--blue);background:var(--pale);color:var(--blue2)}
+
+.gc-opt{border:2px solid var(--border);border-radius:8px;padding:8px 15px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2)}
+.gc-opt.on{border-color:var(--blue);background:var(--pale);color:var(--blue2)}
+.tslot{border:1.5px solid var(--border);border-radius:7px;padding:8px;text-align:center;cursor:pointer;font-size:12px;color:var(--text2)}
+.tslot:hover,.tslot.on{border-color:var(--blue);background:var(--pale);color:var(--blue2);font-weight:600}
+.cal-d{text-align:center;font-size:11px;padding:5px 3px;border-radius:5px;cursor:pointer;color:var(--text2)}
+.cal-d:hover{background:var(--pale)}.cal-d.on{background:var(--blue);color:#fff;font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-ov">
+  <div class="lcard">
+    <div class="llogo">
+      <svg width="28" height="28" viewBox="0 0 100 100" fill="none"><path d="M50 8L88 38v46q0 4-4 4H16q-4 0-4-4V38Z" stroke="#3b8ed8" stroke-width="6" stroke-linejoin="round"/><path d="M28 48Q50 70 72 48Q60 56 28 48Z" fill="#3b8ed8"/></svg>
+      <span style="font-size:18px;font-weight:700;color:var(--text)">SolarLink</span>
+    </div>
+    <div style="font-size:17px;font-weight:700;color:var(--text);text-align:center;margin-bottom:3px">Welcome back</div>
+    <div style="font-size:12px;color:var(--text2);text-align:center;margin-bottom:18px">A solar connection you can finally trust</div>
+    <button class="lbtn l-gg" onclick="loginIn()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>Continue with Google</button>
+    <div class="ldiv">or</div>
+    <button class="lbtn l-em" onclick="loginIn()">Sign in with Email / Phone</button>
+    <p style="text-align:center;font-size:11px;color:var(--text3);margin-top:10px">New partner? <a href="#" style="color:var(--blue);text-decoration:none" onclick="loginIn()">Join free →</a></p>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sb">
+  <div class="sb-logo" onclick="nav('welcome',0)">
+    <svg width="26" height="26" viewBox="0 0 100 100" fill="none"><path d="M50 8L88 38v46q0 4-4 4H16q-4 0-4-4V38Z" stroke="#5aa4e0" stroke-width="6" stroke-linejoin="round"/><path d="M28 48Q50 70 72 48Q60 56 28 48Z" fill="#5aa4e0"/></svg>
+    <span>SolarLink</span>
+  </div>
+
+  <div class="sb-sect">Home</div>
+  <div class="ni on" onclick="nav('welcome',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Welcome</div>
+  <div class="ni" onclick="nav('dashboard',this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</div>
+  <div class="ni" onclick="nav('starthere',this)"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Start Here <span class="ni-badge">Step 4</span></div>
+
+  <div class="sb-sect">My Team</div>
+  <div class="ni" onclick="nav('bdp',this)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Meet Your BDP <span class="ni-dot"></span></div>
+  <div class="ni" onclick="nav('dsp',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>Meet Your DSP <span class="ni-dot"></span></div>
+
+  <div class="sb-sect">Learn</div>
+  <div class="ni" onclick="nav('whysolar',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>Why Solar?</div>
+  <div class="ni" onclick="nav('book',this)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Book My Solar Overview</div>
+
+  <div class="sb-sect">Actions</div>
+  <div class="ni" onclick="nav('submit',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Submit Referral</div>
+  <div class="ni" onclick="nav('track',this)"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Track Referrals</div>
+  <div class="ni" onclick="nav('intro',this)"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>3-Way Intro Builder</div>
+  <div class="ni" onclick="nav('commissions',this)"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Commissions</div>
+
+  <div class="sb-sect">Tools</div>
+  <div class="ni" onclick="nav('scripts',this)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Scripts</div>
+  <div class="ni" onclick="nav('ai',this)"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>AI Message Builder</div>
+  <div class="ni" onclick="nav('links',this)"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>My Links</div>
+  <div class="ni" onclick="nav('marketing',this)"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Marketing Materials</div>
+  <div class="ni" onclick="nav('network',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="3"/><circle cx="5" cy="19" r="3"/><circle cx="19" cy="19" r="3"/><line x1="12" y1="8" x2="5" y2="16"/><line x1="12" y1="8" x2="19" y2="16"/></svg>My Network</div>
+  <div class="ni" onclick="nav('earnings',this)"><svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Earnings Potential</div>
+
+  <div class="sb-sect">Support</div>
+  <div class="ni" onclick="nav('help',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Help Center</div>
+  <div class="ni" onclick="nav('agency',this)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Agency Dashboard</div>
+
+  <div class="sb-sect">Demo</div>
+  <div class="ni" onclick="nav('homeowner',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Homeowner Page</div>
+  <div class="ni" onclick="nav('partner',this)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/><line x1="20" y1="8" x2="20" y2="14"/></svg>Partner Invite</div>
+  <div class="ni" onclick="nav('sms',this)"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>SMS Preview</div>
+
+  <div class="sb-bottom">
+    <div class="sb-user">
+      <div class="uav">DL</div>
+      <div><div style="font-size:12px;font-weight:600;color:#fff">Daniel Lynch</div><div style="font-size:10px;color:var(--text3)">Referral Partner</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="main">
+
+<!-- ═══ WELCOME ═══ -->
+<div class="scr on" id="scr-welcome">
+  <div class="welcome-bg">
+    <div class="wlc-logo">
+      <svg width="32" height="32" viewBox="0 0 100 100" fill="none"><path d="M50 8L88 38v46q0 4-4 4H16q-4 0-4-4V38Z" stroke="#5aa4e0" stroke-width="6" stroke-linejoin="round"/><path d="M28 48Q50 70 72 48Q60 56 28 48Z" fill="#5aa4e0"/></svg>
+      <span>SolarLink</span>
+    </div>
+    <div class="wlc-tag">Nation's most trusted solar referral platform</div>
+    <div class="wlc-h1">Welcome to SolarLink</div>
+    <div class="wlc-sub">Your free portal gives you everything you need to confidently refer homeowners, track your referrals, access resources, and earn commissions when projects install. You do not need to become a solar expert.</div>
+
+    <div class="yt-wrap">
+      <iframe src="https://www.youtube.com/embed/r5yFIEjSyQk?rel=0&modestbranding=1" title="SolarLink" allowfullscreen></iframe>
+    </div>
+
+    <div class="wlc-actions">
+      <div class="wlc-btn primary" onclick="nav('starthere',null)">
+        <div class="wlc-btn-icon">🚀</div>
+        <div class="wlc-btn-t">Start My Orientation</div>
+        <div class="wlc-btn-s">Your step-by-step path to first win</div>
+      </div>
+      <div class="wlc-btn" onclick="nav('book',null)">
+        <div class="wlc-btn-icon">☀️</div>
+        <div class="wlc-btn-t">Book My Solar Overview</div>
+        <div class="wlc-btn-s">Experience the process yourself</div>
+      </div>
+      <div class="wlc-btn" onclick="nav('submit',null)">
+        <div class="wlc-btn-icon">📋</div>
+        <div class="wlc-btn-t">Submit My First Referral</div>
+        <div class="wlc-btn-s">Ready to go? Start here</div>
+      </div>
+    </div>
+    <div class="wlc-secondary">
+      <div class="wlc-s-btn" onclick="nav('bdp',null)">👤 Meet My BDP</div>
+      <div class="wlc-s-btn" onclick="nav('dsp',null)">⚡ Meet My DSP</div>
+      <div class="wlc-s-btn" onclick="nav('marketing',null)">📁 View My Tools</div>
+    </div>
+    <div class="wlc-skip" onclick="nav('dashboard',null)">Skip to dashboard →</div>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD ═══ -->
+<div class="scr" id="scr-dashboard">
+  <div class="tbar">
+    <div class="bc">SolarLink / <b>Dashboard</b></div>
+    <div class="tbar-r">
+      <button class="btn by bsm" onclick="startTour()">▶ Demo Tour</button>
+      <div class="bell" onclick="toggleBell()">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <div class="bell-dot"></div>
+        <div class="bdrop" id="bdrop">
+          <div class="bdrop-hd">3 notifications</div>
+          <div class="bni"><b>Sarah Kim installed!</b> Your $800 commission confirmed.<div class="bni-t">Today · 4:01 PM</div></div>
+          <div class="bni"><b>Your BDP Kanoa</b> left you a message.<div class="bni-t">Today · 9:30 AM</div></div>
+          <div class="bni"><b>Jane Doe</b> — 3-way intro still pending.<div class="bni-t">Yesterday</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pc">
+    <div class="pgt">Good morning, Daniel</div>
+    <div class="pgs">You have a system and a team. Here's where things stand.</div>
+
+    <!-- NBA -->
+    <div class="nba">
+      <div class="nba-l">
+        <div class="nba-label">Next Best Action</div>
+        <div class="nba-text">Send the 3-way intro for Jane Doe</div>
+        <div class="nba-sub">Submitted yesterday · Alex is waiting for the warm handoff</div>
+      </div>
+      <button class="btn by bsm" onclick="nav('intro',null)">Do This Now →</button>
+    </div>
+
+    <div class="share-bar">
+      <div style="flex:1"><div style="font-size:13px;font-weight:700;margin-bottom:2px">Share SolarLink — Everyone pays an electric bill</div><div style="font-size:11px;color:rgba(255,255,255,0.65)">solarlinkpro.com/ref/dlynch · $50 gift card for homeowners</div></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="share-btn" onclick="showToast('Link copied!')">📋 Copy</button>
+        <button class="share-btn" onclick="showToast('Opening Messages...')">💬 Text</button>
+        <button class="share-btn" onclick="showToast('Generating QR...')">⌗ QR</button>
+      </div>
+    </div>
+
+    <div class="sg">
+      <div class="st"><div class="sl">Referrals Submitted</div><div class="sv">12</div><div class="ss">↑ 3 this month</div></div>
+      <div class="st"><div class="sl">Appts Booked</div><div class="sv">7</div><div class="ss">↑ 2 this week</div></div>
+      <div class="st"><div class="sl">Installs</div><div class="sv">4</div><div class="ss">↑ 1 this week</div></div>
+      <div class="st"><div class="sl">Commissions</div><div class="sv">$3,800</div><div class="ss">$800 confirmed</div></div>
+    </div>
+
+    <div class="two">
+      <div>
+        <!-- Team -->
+        <div class="card" style="padding:14px 18px">
+          <div class="ct">Your Support Team</div>
+          <div style="display:flex;gap:10px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border2)">
+            <div style="width:38px;height:38px;border-radius:50%;background:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0">KN</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:700">Kanoa Nartatez</div>
+              <div style="font-size:11px;color:var(--text3)">Your Business Development Partner</div>
+              <div style="display:flex;gap:6px;margin-top:5px">
+                <button class="btn bsm" style="background:var(--pbg);color:var(--ptext);border:1px solid #c4b5fd;padding:4px 8px;font-size:10px" onclick="showToast('Opening message...')">💬 Message</button>
+                <button class="btn bsm bg" style="padding:4px 8px;font-size:10px" onclick="showToast('Opening calendar...')">📅 Book Call</button>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <div style="width:38px;height:38px;border-radius:50%;background:var(--blue2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0">AJ</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:700">Alex Johnson</div>
+              <div style="font-size:11px;color:var(--text3)">Your Dedicated Solar Professional</div>
+              <div style="display:flex;gap:6px;margin-top:5px">
+                <button class="btn bsm bp" style="padding:4px 8px;font-size:10px" onclick="nav('submit',null)">+ Submit Lead</button>
+                <button class="btn bsm bg" style="padding:4px 8px;font-size:10px" onclick="showToast('(602) 555-0182 copied')">📞 Call</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+          <div class="ct">Quick Actions</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="btn bp bfl" onclick="nav('submit',null)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Submit Referral</button>
+            <button class="btn by bfl" onclick="nav('book',null)">☀️ Book Overview</button>
+            <button class="btn bg bfl" onclick="nav('scripts',null)">📋 Copy a Script</button>
+            <button class="btn bg bfl" onclick="nav('links',null)">🔗 My Links</button>
+            <button class="btn bg bfl" onclick="nav('intro',null)">💬 3-Way Intro</button>
+            <button class="btn bg bfl" onclick="toggleSunny()">✨ Ask AI</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="ct">Recent Referral Activity</div>
+          <ul class="tl">
+            <li class="tli"><div class="td green"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="tt">Sarah K. — Installed ✓ · $800 earned</div><div class="ts">May 8 · Commission confirmed</div></div></li>
+            <li class="tli"><div class="td done"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="tt">Marcus T. — Consult Scheduled Thu 2PM</div><div class="ts">Today, 9:12 AM · Alex confirmed</div></div></li>
+            <li class="tli"><div class="td"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/></svg></div><div><div class="tt">Jane Doe — Intro Pending ⚠</div><div class="ts">Yesterday · Send the 3-way intro now</div></div></li>
+            <li class="tli" style="padding-bottom:0"><div class="td gray"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/></svg></div><div><div class="tt" style="color:var(--text3)">Tom R. — DSP Contacted</div><div class="ts">May 6</div></div></li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="ct">This Week's Best Thing to Share</div>
+          <div style="background:#f8fafc;border-left:3px solid var(--blue);padding:10px 13px;border-radius:0 8px 8px 0;font-size:12.5px;color:var(--text2);line-height:1.7;margin-bottom:8px">"Hey [Name], quick question — have you looked into whether solar could lower your electric bill? I work with SolarLink and they do a free, no-pressure review. There's even a $50 gift card just for doing the meeting. Open to it?"</div>
+          <button class="cbtn" onclick="showToast('Script copied!')">Copy this week's script</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ START HERE ═══ -->
+<div class="scr" id="scr-starthere">
+  <div class="tbar"><div class="bc">SolarLink / <b>Start Here</b></div><div class="tbar-r"><span class="badge b-yellow">Step 4 of 10</span></div></div>
+  <div class="pc">
+    <div class="pgt">SolarLink Partner Launch</div>
+    <div class="pgs">Your self-paced path from signed up to first win. You are not alone — your BDP is here to help at every step.</div>
+
+    <div class="step-prog">
+      <div class="spi dn"><div class="sp-c"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div class="sp-l">Video</div></div>
+      <div class="spi dn"><div class="sp-c"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div class="sp-l">BDP</div></div>
+      <div class="spi dn"><div class="sp-c"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div class="sp-l">DSP</div></div>
+      <div class="spi ac"><div class="sp-c">4</div><div class="sp-l">Why Solar</div></div>
+      <div class="spi"><div class="sp-c">5</div><div class="sp-l">Overview</div></div>
+      <div class="spi"><div class="sp-c">6</div><div class="sp-l">First 10</div></div>
+      <div class="spi"><div class="sp-c">7</div><div class="sp-l">Intro</div></div>
+      <div class="spi"><div class="sp-c">8</div><div class="sp-l">Referral</div></div>
+      <div class="spi"><div class="sp-c">9</div><div class="sp-l">Track</div></div>
+      <div class="spi"><div class="sp-c">10</div><div class="sp-l">First Win</div></div>
+    </div>
+
+    <div class="ob-step complete"><div class="ob-hd"><div class="ob-num"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="ob-title">Step 1 — Watch the Welcome Video</div><div class="ob-sub">Understand what SolarLink is and how you get paid</div></div><span class="badge b-green ob-status">Done</span></div></div>
+
+    <div class="ob-step complete"><div class="ob-hd"><div class="ob-num"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="ob-title">Step 2 — Meet Your Business Development Partner</div><div class="ob-sub">Kanoa Nartatez · Confirmed · Group text started</div></div><span class="badge b-green ob-status">Done</span></div></div>
+
+    <div class="ob-step complete"><div class="ob-hd"><div class="ob-num"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="ob-title">Step 3 — Meet Your Dedicated Solar Professional</div><div class="ob-sub">Alex Johnson · Intro call booked May 10</div></div><span class="badge b-green ob-status">Done</span></div></div>
+
+    <div class="ob-step active" id="step4">
+      <div class="ob-hd" onclick="toggleStep('step4')"><div class="ob-num">4</div><div><div class="ob-title">Step 4 — Learn Why Solar Matters</div><div class="ob-sub">Understand why homeowners care about solar right now</div></div><span class="badge b-blue ob-status">In Progress</span></div>
+      <div class="ob-body">
+        <div class="ban ban-b" style="margin-top:4px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/></svg>You don't need to become an expert. Just understand why a homeowner might care — and when to say "let me introduce you to someone."</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn bp" onclick="nav('whysolar',null)">Go to Why Solar →</button>
+          <button class="btn bg bsm" onclick="toggleCb(this)">Mark Complete</button>
+          <button class="btn bsm" style="background:var(--pbg);color:var(--ptext);border:1px solid #c4b5fd" onclick="showToast('Messaging Kanoa...')">Ask My BDP</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ob-step" id="step5"><div class="ob-hd"><div class="ob-num">5</div><div><div class="ob-title">Step 5 — Book Your Own Personalized Solar Overview</div><div class="ob-sub">Experience exactly what your referrals will experience</div></div><span class="badge b-gray ob-status">Not Started</span></div></div>
+
+    <div class="ob-step" id="step6"><div class="ob-hd"><div class="ob-num">6</div><div><div class="ob-title">Step 6 — Build Your First 10-Person Referral List</div><div class="ob-sub">Identify homeowners in your network who may benefit</div></div><span class="badge b-gray ob-status">Not Started</span></div></div>
+
+    <div class="ob-step" id="step7"><div class="ob-hd"><div class="ob-num">7</div><div><div class="ob-title">Step 7 — Send Your First Warm Introduction</div><div class="ob-sub">Copy a permission-based script and send it to 3 people</div></div><span class="badge b-gray ob-status">Not Started</span></div></div>
+
+    <div class="ob-step" id="step8"><div class="ob-hd"><div class="ob-num">8</div><div><div class="ob-title">Step 8 — Submit Your First Referral</div><div class="ob-sub">Enter a homeowner into the system</div></div><span class="badge b-gray ob-status">Not Started</span></div></div>
+
+    <div class="ob-step" id="step9"><div class="ob-hd"><div class="ob-num">9</div><div><div class="ob-title">Step 9 — Track Your Referral</div><div class="ob-sub">Learn how statuses work and what happens next</div></div><span class="badge b-gray ob-status">Not Started</span></div></div>
+
+    <div class="ob-step" id="step10"><div class="ob-hd"><div class="ob-num">10</div><div><div class="ob-title">Step 10 — Get Your First Win</div><div class="ob-sub">Appointment booked, deal signed, or commission earned</div></div><span class="badge b-gray ob-status">Not Started</span></div></div>
+  </div>
+</div>
+
+<!-- ═══ MEET BDP ═══ -->
+<div class="scr" id="scr-bdp">
+  <div class="tbar"><div class="bc">SolarLink / <b>Meet Your BDP</b></div></div>
+  <div class="pc">
+    <div class="pgt">Meet Your Business Development Partner</div>
+    <div class="pgs">A real person is here to help you get activated. Your BDP is not a bot. They are your onboarding guide, activation coach, and relationship support person.</div>
+
+    <div class="person-card" style="display:flex;gap:16px;align-items:flex-start">
+      <div class="person-av bdp-av">KN</div>
+      <div style="flex:1">
+        <div class="person-name">Kanoa Nartatez</div>
+        <div class="person-role">Business Development Partner · SolarLink</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:10px">Specializes in agency onboarding, partner activation, and the Tampa market</div>
+        <div class="person-actions">
+          <div class="pa" onclick="showToast('Opening group text...')">💬 Start Group Text</div>
+          <div class="pa" onclick="showToast('Opening calendar...')">📅 Book a Call</div>
+          <div class="pa" onclick="showToast('Message sent to Kanoa!')">✉ Send Message</div>
+          <div class="pa" onclick="showToast('Kanoa: (813) 555-0100')">📞 Call Kanoa</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">What Your BDP Does For You</div>
+      <div class="chk"><div class="cb dn"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="cl dn">Welcome you personally when you join</div></div>
+      <div class="chk"><div class="cb dn"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="cl dn">Walk you through the portal</div></div>
+      <div class="chk"><div class="cb dn"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="cl dn">Help you understand who to refer</div></div>
+      <div class="chk"><div class="cb" onclick="toggleCb(this)"></div><div class="cl">Help you identify your first 10 contacts</div></div>
+      <div class="chk"><div class="cb" onclick="toggleCb(this)"></div><div class="cl">Review your first message before you send it</div></div>
+      <div class="chk"><div class="cb" onclick="toggleCb(this)"></div><div class="cl">Help you book your own Personalized Solar Overview</div></div>
+      <div class="chk"><div class="cb" onclick="toggleCb(this)"></div><div class="cl">Follow up when you get stuck</div></div>
+      <div class="chk"><div class="cb" onclick="toggleCb(this)"></div><div class="cl">Celebrate your first win</div></div>
+    </div>
+
+    <div class="card">
+      <div class="ct">Your Next Check-In</div>
+      <div style="background:#f8fafc;border-radius:8px;padding:14px;display:flex;align-items:center;justify-content:space-between">
+        <div><div style="font-size:14px;font-weight:700">Tuesday, May 14 · 11:00 AM</div><div style="font-size:12px;color:var(--text2);margin-top:3px">15-min activation check-in · Zoom · Kanoa Nartatez</div></div>
+        <button class="btn bg bsm" onclick="showToast('Added to calendar!')">Add to Calendar</button>
+      </div>
+    </div>
+
+    <div class="ban ban-n"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/></svg><div>Your BDP is not here to pressure you. They are here to over-serve you until you feel confident and activated. If you are ever stuck, message Kanoa first.</div></div>
+  </div>
+</div>
+
+<!-- ═══ MEET DSP ═══ -->
+<div class="scr" id="scr-dsp">
+  <div class="tbar"><div class="bc">SolarLink / <b>Meet Your DSP</b></div></div>
+  <div class="pc">
+    <div class="pgt">Meet Your Dedicated Solar Professional</div>
+    <div class="pgs">You are not sending your friends, family, or clients to a random call center. You are introducing them to a real solar professional who is responsible for protecting the relationship.</div>
+
+    <div class="person-card" style="display:flex;gap:16px;align-items:flex-start">
+      <div class="person-av">AJ</div>
+      <div style="flex:1">
+        <div class="person-name">Alex Johnson</div>
+        <div class="person-role">Dedicated Solar Professional · Arizona &amp; Florida</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:4px">Tesla-certified · 4.9★ · 200+ installs · 5 years experience</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:10px">"My job is to protect your client relationship. I'll always give homeowners an honest assessment — even if solar isn't the right fit."</div>
+        <div class="person-actions">
+          <div class="pa" onclick="nav('submit',null)">+ Introduce a Homeowner</div>
+          <div class="pa" onclick="nav('book',null)">📅 Book My Overview</div>
+          <div class="pa" onclick="showToast('(602) 555-0182 copied')">📞 Call Alex</div>
+          <div class="pa" onclick="showToast('alex@solarlink.com copied')">✉ Email Alex</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">What Alex Does For Your Referrals</div>
+      <ul class="tl">
+        <li class="tli"><div class="td done"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="tt">Reviews the homeowner's utility bill</div><div class="ts">Understands their actual energy usage</div></div></li>
+        <li class="tli"><div class="td done"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="tt">Designs a custom solar overview</div><div class="ts">Based on their roof, usage, and goals</div></div></li>
+        <li class="tli"><div class="td done"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="tt">Answers all homeowner questions — honestly</div><div class="ts">Even if the answer is "solar isn't right for you"</div></div></li>
+        <li class="tli"><div class="td done"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="tt">Guides the homeowner through the process</div><div class="ts">From overview to install to activation</div></div></li>
+        <li class="tli" style="padding-bottom:0"><div class="td done"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="tt">Updates you at every stage</div><div class="ts">You always know what's happening</div></div></li>
+      </ul>
+    </div>
+
+    <div class="ban ban-g"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><div>The fastest way to build confidence is to experience the process yourself. <b>Book your own Personalized Solar Overview</b> — for your home or someone you trust — and see exactly what your referrals experience.</div></div>
+    <button class="btn bp" onclick="nav('book',null)">Book My Solar Overview →</button>
+  </div>
+</div>
+
+<!-- ═══ WHY SOLAR ═══ -->
+<div class="scr" id="scr-whysolar">
+  <div class="tbar"><div class="bc">SolarLink / <b>Why Solar?</b></div></div>
+  <div class="pc">
+    <div class="pgt">Why Solar in 2026?</div>
+    <div class="pgs">You don't need to become a solar expert. You just need to understand why a homeowner might care — and know when to say "let me introduce you to someone."</div>
+
+    <div class="ban ban-n"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>"Homes need electricity. That doesn't change. The only question is how you want to pay for it over the next 25 years."</div>
+
+    <div class="two">
+      <div>
+        <div class="card">
+          <div class="ct">Module 1 — Why Solar Now</div>
+          <ul style="list-style:none;padding:0">
+            <li style="padding:6px 0 6px 18px;position:relative;font-size:13px;color:var(--text2);line-height:1.55;border-bottom:1px solid #f8fafc"><span style="position:absolute;left:0;top:13px;width:6px;height:6px;border-radius:50%;background:var(--blue);display:block"></span>Electricity costs have risen 5–7% per year historically</li>
+            <li style="padding:6px 0 6px 18px;position:relative;font-size:13px;color:var(--text2);line-height:1.55;border-bottom:1px solid #f8fafc"><span style="position:absolute;left:0;top:13px;width:6px;height:6px;border-radius:50%;background:var(--blue);display:block"></span>AI and EVs are driving electricity demand higher</li>
+            <li style="padding:6px 0 6px 18px;position:relative;font-size:13px;color:var(--text2);line-height:1.55;border-bottom:1px solid #f8fafc"><span style="position:absolute;left:0;top:13px;width:6px;height:6px;border-radius:50%;background:var(--blue);display:block"></span>Florida hurricanes keep exposing grid vulnerability</li>
+            <li style="padding:6px 0 6px 18px;position:relative;font-size:13px;color:var(--text2);line-height:1.55"><span style="position:absolute;left:0;top:13px;width:6px;height:6px;border-radius:50%;background:var(--blue);display:block"></span>Solar lets the roof become productive instead of just sitting there</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="ct">Module 2 — How Solar Works</div>
+          <div style="font-size:12.5px;color:var(--text2);line-height:1.7">Your roof produces power during the day. Your home uses it first. Extra energy goes back to the grid for credits. The home stays connected to the utility. A Tesla Powerwall battery adds backup power during outages. The goal: lower net monthly cost, better protection, long-term savings.</div>
+          <div class="ban ban-y" style="margin-top:10px;margin-bottom:0"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/></svg>Most homes stay connected to the utility. This isn't off-grid — it's about producing power right where it's needed.</div>
+        </div>
+        <div class="card">
+          <div class="ct">Module 3 — Why Solar Isn't For Everyone</div>
+          <div style="font-size:12.5px;color:var(--text2);line-height:1.7;margin-bottom:8px">Some homes are great fits. Some aren't. That is why SolarLink uses a Personalized Solar Overview — so the homeowner gets an honest answer based on their specific roof, usage, and location.</div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);text-align:center;padding:12px;background:#f8fafc;border-radius:8px">"Good solar feels logical. Bad solar feels forced."</div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="ct">Module 4 — What Makes a Good Referral</div>
+          <div class="chk"><div class="cb dn"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="cl dn">Homeowner (owns the property)</div></div>
+          <div class="chk"><div class="cb dn"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="cl dn">Electric bill over $150/mo (ideally $200+)</div></div>
+          <div class="chk"><div class="cb dn"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="cl dn">Open to a no-pressure conversation</div></div>
+          <div class="chk"><div class="cb" onclick="toggleCb(this)"></div><div class="cl">Has not already gone solar</div></div>
+          <div class="chk"><div class="cb" onclick="toggleCb(this)"></div><div class="cl">Good sun exposure on roof</div></div>
+          <div class="chk"><div class="cb" onclick="toggleCb(this)"></div><div class="cl">In a serviceable market (AZ or FL)</div></div>
+          <div class="chk"><div class="cb" onclick="toggleCb(this)"></div><div class="cl">Utility bill available to upload</div></div>
+        </div>
+        <div class="card">
+          <div class="ct">Module 5 — Common Homeowner Questions</div>
+          <div class="acc" onclick="toggleAcc(this)"><div class="acc-q"><span>Is solar free?</span><span class="acc-ic">+</span></div><div class="acc-a">Not exactly. For qualified homeowners there is typically no large upfront deposit — but the system does have a cost that is structured over time per agreement. Never say "free solar."</div></div>
+          <div class="acc" onclick="toggleAcc(this)"><div class="acc-q"><span>What if I move?</span><span class="acc-ic">+</span></div><div class="acc-a">The agreement is designed to transfer with the home — similar to an electric bill. The next homeowner can assume the same lower power cost structure.</div></div>
+          <div class="acc" onclick="toggleAcc(this)"><div class="acc-q"><span>What about during an outage?</span><span class="acc-ic">+</span></div><div class="acc-a">Without a battery, solar panels stop during a grid outage for safety reasons. A Tesla Powerwall battery adds backup power that recharges from the sun after the storm.</div></div>
+          <div class="acc" onclick="toggleAcc(this)"><div class="acc-q"><span>What if my roof is old?</span><span class="acc-ic">+</span></div><div class="acc-a">If the roof isn't in solid condition, Alex will let the homeowner know before moving forward. A good solar pro should say no when the situation isn't right.</div></div>
+          <div class="acc" onclick="toggleAcc(this)"><div class="acc-q"><span>What if they already have solar?</span><span class="acc-ic">+</span></div><div class="acc-a">Still worth submitting — they may be eligible for a battery addition, a system upgrade, or be paying more than they should be under an older agreement.</div></div>
+        </div>
+        <div class="card">
+          <div class="ct">Module 6 — Why Referrals Work Better Than Ads</div>
+          <div style="font-size:12.5px;color:var(--text2);line-height:1.7">People trust people more than ads, call centers, or random door knockers. A homeowner is far more likely to take a meeting when the introduction comes from someone they already know and trust. That's the whole point of SolarLink. You are the trusted layer.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BOOK OVERVIEW ═══ -->
+<div class="scr" id="scr-book">
+  <div class="tbar"><div class="bc">SolarLink / <b>Book My Solar Overview</b></div></div>
+  <div class="pc">
+    <div class="pgt">Book Your Personalized Solar Overview</div>
+    <div class="pgs">The fastest way to understand SolarLink is to experience the process yourself. Whether it's your home, a family member's, or a client's — see exactly what your referrals will experience.</div>
+    <div class="ban ban-g"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>This is not a sales pitch. Come see the experience so you know what you're sharing. You may also create your first referral or first deal.</div>
+    <div class="two">
+      <div>
+        <div class="card" style="margin-bottom:12px"><div class="ct">Select Date</div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:10px">
+            <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:3px">Su</div><div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:3px">Mo</div><div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:3px">Tu</div><div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:3px">We</div><div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:3px">Th</div><div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:3px">Fr</div><div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:3px">Sa</div>
+            <div class="cal-d" onclick="selDay(this)">11</div><div class="cal-d" onclick="selDay(this)">12</div><div class="cal-d on" onclick="selDay(this)">13</div><div class="cal-d" onclick="selDay(this)">14</div><div class="cal-d" onclick="selDay(this)">15</div><div class="cal-d" onclick="selDay(this)">16</div><div class="cal-d" onclick="selDay(this)">17</div>
+            <div class="cal-d" onclick="selDay(this)">18</div><div class="cal-d" onclick="selDay(this)">19</div><div class="cal-d" onclick="selDay(this)">20</div><div class="cal-d" onclick="selDay(this)">21</div><div class="cal-d" onclick="selDay(this)">22</div><div class="cal-d" onclick="selDay(this)">23</div><div class="cal-d" onclick="selDay(this)">24</div>
+          </div>
+        </div>
+        <div class="card"><div class="ct">Select Time</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px"><div class="tslot" onclick="selSlot(this)">9:00 AM</div><div class="tslot" onclick="selSlot(this)">10:00 AM</div><div class="tslot on" onclick="selSlot(this)">11:00 AM</div><div class="tslot" onclick="selSlot(this)">1:00 PM</div><div class="tslot" onclick="selSlot(this)">2:00 PM</div><div class="tslot" onclick="selSlot(this)">3:00 PM</div></div></div>
+      </div>
+      <div class="card">
+        <div class="ct">Your Details</div>
+        <div class="fg"><label>Full name</label><input value="Daniel Lynch"></div>
+        <div class="fg"><label>Phone</label><input value="(985) 373-1295"></div>
+        <div class="fg"><label>Property address</label><input placeholder="Your home address or client's"></div>
+        <div class="fg"><label>Avg electric bill</label><input placeholder="$250/mo"></div>
+        <div class="fg" style="margin-bottom:12px"><label>Notes</label><textarea style="min-height:56px" placeholder="Your own home? A client? A family member? Anything Alex should know..."></textarea></div>
+        <div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:12px"><div style="font-size:13px;font-weight:700;margin-bottom:2px">Tue May 13 · 11:00 AM</div><div style="font-size:11px;color:var(--text3)">Alex Johnson · Virtual or In-Home · ~45 min · No pressure</div></div>
+        <button class="btn by bfl" onclick="showToast('Booked! Alex will confirm via SMS shortly.')">Confirm My Solar Overview →</button>
+        <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:8px">No commitment required · This is for your education and confidence</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SUBMIT REFERRAL ═══ -->
+<div class="scr" id="scr-submit">
+  <div class="tbar"><div class="bc">SolarLink / <b>Submit Referral</b></div><div class="tbar-r" style="font-size:12px;color:var(--text2)">Alex contacts within 24 hours</div></div>
+  <div class="pc">
+    <div class="pgt">Submit a Referral</div>
+    <div class="pgs">Fill out what you know. Alex handles the rest — consultation, proposal, follow-up, and updates back to you at every stage.</div>
+    <div class="ban ban-b"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/></svg>Your info is automatically attached — no need to enter your own details. After submitting you'll get the 3-way intro script to send.</div>
+    <div class="card"><div class="ct">Homeowner Information</div>
+      <div class="fgr"><div class="fg"><label>First name <span class="req">*</span></label><input id="sub-fn" type="text" placeholder="Jane"></div><div class="fg"><label>Last name <span class="req">*</span></label><input type="text" placeholder="Doe"></div></div>
+      <div class="fgr"><div class="fg"><label>Phone <span class="req">*</span></label><input type="tel" placeholder="(555) 555-0123"></div><div class="fg"><label>Email</label><input type="email" placeholder="jane@email.com"></div></div>
+      <div class="fg"><label>Home address</label><input type="text" placeholder="Street, City, State, ZIP"></div>
+      <div class="fgr"><div class="fg"><label>Utility company</label><select><option>Select...</option><option>APS</option><option>SRP</option><option>FPL</option><option>Duke / TECO</option><option>Other</option></select></div><div class="fg"><label>Avg electric bill</label><input placeholder="$240"><div class="hint">$150+ = stronger candidate</div></div></div>
+      <div class="fgr"><div class="fg"><label>Owns home? <span class="req">*</span></label><select><option>Yes</option><option>No / Not sure</option></select></div><div class="fg"><label>Has solar already?</label><select><option>No</option><option>Yes</option><option>Not sure</option></select></div></div>
+      <div class="fgr"><div class="fg"><label>Interested in battery backup?</label><select><option>Unsure</option><option>Yes</option><option>No</option></select></div><div class="fg"><label>Best time to contact</label><select><option>Morning</option><option>Afternoon</option><option>Evening</option><option>Anytime</option></select></div></div>
+      <div class="fg"><label>Your relationship to them</label><select><option>Friend / family</option><option>Past client</option><option>Neighbor</option><option>Coworker</option><option>Business contact</option><option>Other</option></select></div>
+    </div>
+    <div class="card"><div class="ct">Notes for Alex</div><textarea placeholder="How you know them, why you think they'd be open, roof type, anything helpful for the first conversation..."></textarea></div>
+    <div class="card"><div class="ct">Upload Utility Bill <span style="font-weight:400;color:var(--text3);font-size:10px;letter-spacing:0">(optional — helps size the system)</span></div>
+      <div style="border:2px dashed var(--border);border-radius:10px;padding:22px;text-align:center;cursor:pointer" onclick="showToast('File upload ready')"><div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:2px">Click to upload or drag &amp; drop</div><div style="font-size:11px;color:var(--text3)">PDF, JPG, PNG · Max 10MB</div></div>
+    </div>
+    <div class="card" style="background:var(--pale);border-color:#bcdcf3">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <input type="checkbox" style="width:16px;height:16px;flex-shrink:0;margin-top:2px">
+        <div style="font-size:12.5px;color:var(--text);line-height:1.6">I confirm I have permission to introduce this homeowner to SolarLink and that they are aware someone will be reaching out to them.</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:9px"><button class="btn bp" onclick="submitLead()">Submit Referral → Get Intro Script</button><button class="btn bg">Save Draft</button></div>
+  </div>
+</div>
+
+<!-- ═══ TRACK REFERRALS ═══ -->
+<div class="scr" id="scr-track">
+  <div class="tbar"><div class="bc">SolarLink / <b>Track Referrals</b></div><div class="tbar-r"><button class="btn bp bsm" onclick="nav('submit',null)">+ Submit Referral</button></div></div>
+  <div class="pc">
+    <div class="pgt">Track Referrals</div>
+    <div class="pgs">Every referral. Every stage. You always know exactly what is happening — no black holes.</div>
+
+    <div class="status-pipe">
+      <div class="sp-item"><div class="sp-label done">Submitted</div><div class="sp-arrow">›</div></div>
+      <div class="sp-item"><div class="sp-label done">Contacted</div><div class="sp-arrow">›</div></div>
+      <div class="sp-item"><div class="sp-label done">Bill Received</div><div class="sp-arrow">›</div></div>
+      <div class="sp-item"><div class="sp-label active">Appt Booked</div><div class="sp-arrow">›</div></div>
+      <div class="sp-item"><div class="sp-label">Overview Done</div><div class="sp-arrow">›</div></div>
+      <div class="sp-item"><div class="sp-label">Proposal</div><div class="sp-arrow">›</div></div>
+      <div class="sp-item"><div class="sp-label">Signed</div><div class="sp-arrow">›</div></div>
+      <div class="sp-item"><div class="sp-label">Install</div><div class="sp-arrow">›</div></div>
+      <div class="sp-item"><div class="sp-label">PTO</div><div class="sp-arrow">›</div></div>
+      <div class="sp-item"><div class="sp-label">Paid ✓</div></div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="rt">
+        <thead><tr><th>Homeowner</th><th>Submitted</th><th>Current Stage</th><th>Next Step</th><th>DSP</th><th>Est. Commission</th><th>Progress</th></tr></thead>
+        <tbody>
+          <tr onclick="openLead(0)"><td><div class="ln">Jane Doe</div><div style="font-size:10px;color:var(--text3)">Phoenix, AZ</div></td><td>May 11</td><td><span class="badge b-yellow">Intro Pending</span></td><td style="font-size:11px;color:var(--red)">Send 3-way intro</td><td>Alex J.</td><td style="font-weight:700;color:var(--amber)">~$3,200</td><td><div class="pb"><div class="pf" style="width:20%"></div></div></td></tr>
+          <tr onclick="openLead(1)"><td><div class="ln">Marcus Thompson</div><div style="font-size:10px;color:var(--text3)">Scottsdale, AZ</div></td><td>May 6</td><td><span class="badge b-blue">Appt Scheduled</span></td><td style="font-size:11px">Thu May 15 · 2PM</td><td>Alex J.</td><td style="font-weight:700;color:var(--amber)">~$3,800</td><td><div class="pb"><div class="pf" style="width:55%"></div></div></td></tr>
+          <tr onclick="openLead(2)"><td><div class="ln">Sarah Kim</div><div style="font-size:10px;color:var(--text3)">Tempe, AZ</div></td><td>Apr 20</td><td><span class="badge b-green">Paid ✓</span></td><td style="font-size:11px;color:var(--green)">Commission confirmed</td><td>Alex J.</td><td style="font-weight:700;color:var(--green)">$800</td><td><div class="pb"><div class="pf" style="width:100%;background:var(--green)"></div></div></td></tr>
+          <tr onclick="openLead(3)"><td><div class="ln">Tom Rivera</div><div style="font-size:10px;color:var(--text3)">Mesa, AZ</div></td><td>May 6</td><td><span class="badge b-gray">Contacted</span></td><td style="font-size:11px">Alex left voicemail</td><td>Alex J.</td><td style="color:var(--text3)">~$2,800</td><td><div class="pb"><div class="pf" style="width:30%"></div></div></td></tr>
+          <tr onclick="openLead(4)"><td><div class="ln">Linda Park</div><div style="font-size:10px;color:var(--text3)">Gilbert, AZ</div></td><td>Apr 15</td><td><span class="badge b-blue">Appt Scheduled</span></td><td style="font-size:11px">Wed May 14 · 10AM</td><td>Alex J.</td><td style="font-weight:700;color:var(--amber)">~$3,500</td><td><div class="pb"><div class="pf" style="width:55%"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ LEAD DETAIL ═══ -->
+<div class="scr" id="scr-detail">
+  <div class="tbar"><div class="bc">SolarLink / Track Referrals / <b id="d-bc">Jane Doe</b></div><button class="btn bg bsm" onclick="nav('track',null)">← Back</button></div>
+  <div class="pc">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div><div class="pgt" id="d-name" style="margin-bottom:3px">Jane Doe</div><div style="display:flex;gap:8px;align-items:center"><span class="badge" id="d-badge">Intro Pending</span><span style="font-size:11px;color:var(--text3)" id="d-meta">Submitted May 11 · Phoenix AZ</span></div></div>
+      <button class="btn bp bsm" onclick="nav('intro',null)">Send 3-Way Intro →</button>
+    </div>
+    <div class="two">
+      <div>
+        <div class="card"><div class="ct">Homeowner Details</div>
+          <table style="width:100%;font-size:12.5px;border-collapse:collapse">
+            <tr><td style="color:var(--text2);padding:4px 0;width:36%">Phone</td><td id="d-phone">(555) 555-0123</td></tr>
+            <tr><td style="color:var(--text2);padding:4px 0">Address</td><td id="d-addr">123 Saguaro Dr, Phoenix AZ</td></tr>
+            <tr><td style="color:var(--text2);padding:4px 0">Avg bill</td><td style="font-weight:700" id="d-bill">$240/mo</td></tr>
+            <tr><td style="color:var(--text2);padding:4px 0">Owns home</td><td style="color:var(--green);font-weight:700">Yes ✓</td></tr>
+            <tr><td style="color:var(--text2);padding:4px 0">DSP</td><td>Alex Johnson</td></tr>
+          </table>
+        </div>
+        <div class="card"><div class="ct">Estimated Commission</div>
+          <div style="background:var(--gbg);border-radius:8px;padding:12px;text-align:center"><div style="font-size:26px;font-weight:700;color:var(--gtext)" id="d-earn">~$3,200</div><div style="font-size:11px;color:var(--text2);margin-top:2px" id="d-esub">Est. 7 kW · Paid at install · Per agreement</div></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.5">Commission estimates are projections and may change based on project size, product type, finance approval, cancellation, installation, and final reconciliation.</div>
+        </div>
+        <div class="card"><div class="ct">Notes &amp; Updates</div>
+          <div id="d-notes"></div>
+          <div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:9px 11px;margin-top:9px">
+            <textarea id="new-note" style="border:none;background:transparent;width:100%;font-size:12.5px;color:var(--text);resize:none;outline:none;min-height:50px;font-family:inherit" placeholder="Add a note..."></textarea>
+            <div style="display:flex;justify-content:flex-end;margin-top:4px"><button class="btn bp bsm" onclick="addNote()">Add Note</button></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card"><div class="ct">Status Timeline</div><ul class="tl" id="d-tl"></ul></div>
+        <div class="card"><div class="ct">3-Way Intro Script</div>
+          <div class="script-box">
+            <button class="sc-c" onclick="showToast('Copied!')">Copy</button>
+            "Hey <span class="sh" id="intro-hw">[Name]</span>, I want to introduce you to <b>Alex Johnson</b> with SolarLink — he helps homeowners see if solar makes sense, without pressure.<br><br>Alex, this is <span class="sh" id="intro-hw2">[Name]</span>. They may be open to learning whether solar could lower their electric costs."
+          </div>
+          <div style="display:flex;gap:7px;margin-top:9px"><button class="btn bn2 bsm" onclick="showToast('✓ Intro confirmed! Status updated.')">✓ I Sent It</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ COMMISSIONS ═══ -->
+<div class="scr" id="scr-commissions">
+  <div class="tbar"><div class="bc">SolarLink / <b>Commissions</b></div></div>
+  <div class="pc">
+    <div class="pgt">Commissions</div>
+    <div class="pgs">Commission estimates are projections and may change based on project size, product type, finance approval, installation, and final reconciliation.</div>
+    <div class="sg">
+      <div class="st"><div class="sl">Confirmed Paid</div><div class="sv" style="color:var(--green)">$800</div><div class="ss">Payout Jun 1</div></div>
+      <div class="st"><div class="sl">Pending — Projects Active</div><div class="sv" style="color:var(--amber)">$10,500</div><div class="ss">3 deals in progress</div></div>
+      <div class="st"><div class="sl">Network Overrides</div><div class="sv">$600</div><div class="ss">3 sub-partners</div></div>
+      <div class="st"><div class="sl">Payout Setup</div><div class="sv" style="font-size:14px;color:var(--green)">✓ Ready</div><div class="ss">DD ···4521</div></div>
+    </div>
+    <div class="card"><div class="ct">Project Breakdown</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f8fafc"><div><div style="font-size:13px;font-weight:700">Sarah Kim — Installed ✓</div><div style="font-size:11px;color:var(--text3)">7.2 kW · Tempe AZ · May 8</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--green)">$800</div><div style="font-size:10px;color:var(--green)">Paid ✓</div></div></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f8fafc"><div><div style="font-size:13px;font-weight:700">Marcus Thompson</div><div style="font-size:11px;color:var(--text3)">Consult Thu · Est. 8.5 kW</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--amber)">~$3,800</div><div style="font-size:10px;color:var(--amber)">Pending install</div></div></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f8fafc"><div><div style="font-size:13px;font-weight:700">Linda Park</div><div style="font-size:11px;color:var(--text3)">Consult scheduled · Est. 6.8 kW</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--amber)">~$3,200</div></div></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0"><div><div style="font-size:13px;font-weight:700">Jane Doe</div><div style="font-size:11px;color:var(--text3)">Intro pending</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--text3)">~$3,200</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCRIPTS ═══ -->
+<div class="scr" id="scr-scripts">
+  <div class="tbar"><div class="bc">SolarLink / <b>Scripts</b></div></div>
+  <div class="pc">
+    <div class="pgt">Scripts</div>
+    <div class="pgs">Your job is not to convince. Your job is to open the door to a helpful conversation. Use these as they are, or customize with the AI builder.</div>
+
+    <div style="margin-bottom:14px">
+      <span class="ptab on" onclick="selScripts(this,'friends')">Friends &amp; Family</span>
+      <span class="ptab" onclick="selScripts(this,'clients')">Past Clients</span>
+      <span class="ptab" onclick="selScripts(this,'realtor')">Realtors</span>
+      <span class="ptab" onclick="selScripts(this,'roofer')">Roofers</span>
+      <span class="ptab" onclick="selScripts(this,'mlo')">MLOs</span>
+      <span class="ptab" onclick="selScripts(this,'social')">Social Media</span>
+      <span class="ptab" onclick="selScripts(this,'followup')">Follow-Up</span>
+    </div>
+
+    <div id="script-wrap">
+      <div class="script-cat">
+        <div class="script-cat-title">Opening text — friend or family <button class="cbtn" onclick="showToast('Copied!')">Copy</button></div>
+        <div class="script-box">"Hey [Name], quick question — are you happy with your electric bill? I've been sharing something with homeowners that I thought of you for. Totally free, no pressure — just a way to see if there's a better option. Open to hearing about it?"<button class="sc-c" onclick="showToast('Copied!')">Copy</button></div>
+      </div>
+      <div class="script-cat">
+        <div class="script-cat-title">If they say "tell me more" <button class="cbtn" onclick="showToast('Copied!')">Copy</button></div>
+        <div class="script-box">"It's a local solar professional I work with. He runs a free, no-pressure review based on your actual electric bill and roof. If it makes sense, great. If not, he'll tell you. There's even a $50 gift card just for doing the meeting. Want me to make the intro?"<button class="sc-c" onclick="showToast('Copied!')">Copy</button></div>
+      </div>
+      <div class="script-cat">
+        <div class="script-cat-title">3-Way intro text <button class="cbtn" onclick="showToast('Copied!')">Copy</button></div>
+        <div class="script-box">"Hey [Name], introducing you to Alex Johnson with SolarLink — he helps homeowners see if solar makes sense, without pressure. Alex, this is [Name]. They may be open to learning whether solar could lower their electric costs."<button class="sc-c" onclick="showToast('Copied!')">Copy</button></div>
+      </div>
+      <div class="script-cat">
+        <div class="script-cat-title">Invite a partner <button class="cbtn" onclick="showToast('Copied!')">Copy</button></div>
+        <div class="script-box">"Hey [Name], do you know homeowners who complain about their electric bill? I work with a solar referral platform called SolarLink — free to join, and when homeowners you introduce go solar, you earn a commission. Would you be open to a quick overview?"<button class="sc-c" onclick="showToast('Copied!')">Copy</button></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn bp" onclick="nav('ai',null)">✨ Customize with AI Builder</button>
+      <button class="btn bg" onclick="showToast('Sending to Kanoa for review...')">Send to BDP for Review</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ AI MESSAGE BUILDER ═══ -->
+<div class="scr" id="scr-ai">
+  <div class="tbar"><div class="bc">SolarLink / <b>AI Message Builder</b></div></div>
+  <div class="pc">
+    <div class="pgt">AI Message Builder</div>
+    <div class="pgs">Tell the AI who you're messaging and it will write a professional, permission-based message. You can always send it to Kanoa for a quick review before sending.</div>
+
+    <div class="card">
+      <div class="ct">Build Your Message</div>
+      <div class="fgr">
+        <div class="fg"><label>Who are you messaging?</label><select id="ai-who"><option>Friend or family member</option><option>Past client</option><option>Realtor / real estate agent</option><option>Mortgage loan officer</option><option>Roofer or contractor</option><option>Insurance agent</option><option>Business owner</option><option>Neighbor</option></select></div>
+        <div class="fg"><label>What are you inviting them to?</label><select id="ai-invite"><option>Solar overview for their home</option><option>Become a referral partner</option><option>Both</option></select></div>
+      </div>
+      <div class="fgr">
+        <div class="fg"><label>Tone</label><select id="ai-tone"><option>Casual and friendly</option><option>Professional</option><option>Short and direct</option></select></div>
+        <div class="fg"><label>Their electric bill (if known)</label><input placeholder="e.g. $280/mo" id="ai-bill"></div>
+      </div>
+      <button class="btn bp" onclick="buildAI()">Generate Message →</button>
+    </div>
+
+    <div class="card" id="ai-result" style="display:none">
+      <div class="ct">Your Generated Message</div>
+      <div class="script-box" id="ai-output" style="font-size:13px;line-height:1.7">
+        <button class="sc-c" onclick="showToast('Copied!')">Copy</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn bn2" onclick="showToast('Copied!')">Copy Message</button>
+        <button class="btn" style="background:var(--pbg);color:var(--ptext);border:1px solid #c4b5fd" onclick="showToast('Sent to Kanoa for review!')">Send to BDP for Review</button>
+        <button class="btn bg" onclick="buildAI()">Try Again</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 3-WAY INTRO ═══ -->
+<div class="scr" id="scr-intro">
+  <div class="tbar"><div class="bc">SolarLink / <b>3-Way Intro Builder</b></div></div>
+  <div class="pc">
+    <div class="pgt">3-Way Intro Builder</div>
+    <div class="pgs">The intro makes the referral 3–5x more likely to convert. This tool builds it for you — just add the name and copy.</div>
+    <div class="ban ban-y"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>When you send this intro, Alex already knows your contact cares and is expecting a call. That's the warm handoff.</div>
+    <div class="card">
+      <div class="ct">Build Your Intro</div>
+      <div class="fgr"><div class="fg"><label>Homeowner first name</label><input id="ib-hw" type="text" placeholder="Jane" oninput="buildIntro()"></div><div class="fg"><label>Why you're introducing them (optional)</label><input id="ib-why" type="text" placeholder="Her bill is really high" oninput="buildIntro()"></div></div>
+      <div class="script-box" id="intro-preview" style="font-size:13px;margin:12px 0;line-height:1.75">
+        "Hey <span class="sh">Jane</span>, I want to introduce you to <b>Alex Johnson</b> with SolarLink — he helps homeowners see if solar makes sense, without pressure.<br><br>Alex, this is <span class="sh">Jane</span>. She may be open to learning whether solar could lower or stabilize her electric costs."
+      </div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="btn bp" onclick="showToast('Copied! Paste into your texts now.')">📋 Copy Intro</button>
+        <button class="btn bn2" onclick="showToast('✓ Intro confirmed!')">✓ I Sent It</button>
+        <button class="btn bg" onclick="showToast('Reminder set for tomorrow.')">Remind me tomorrow</button>
+        <button class="btn bsm" style="background:var(--pbg);color:var(--ptext);border:1px solid #c4b5fd" onclick="showToast('Sent to Kanoa!')">Ask BDP to Review</button>
+      </div>
+    </div>
+    <div class="card"><div class="ct">Referrals Still Waiting on Intro</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f8fafc"><div><div style="font-size:13px;font-weight:600">Jane Doe</div><div style="font-size:11px;color:var(--text3)">Submitted yesterday · Alex is waiting</div></div><span class="badge b-red">Pending</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0"><div><div style="font-size:13px;font-weight:600">Tom Rivera</div><div style="font-size:11px;color:var(--text3)">Submitted May 6</div></div><span class="badge b-green">✓ Sent</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MY LINKS ═══ -->
+<div class="scr" id="scr-links">
+  <div class="tbar"><div class="bc">SolarLink / <b>My Links</b></div></div>
+  <div class="pc">
+    <div class="pgt">My Links</div>
+    <div class="pgs">Share these everywhere. Attribution is automatic — you get credit for every referral and every partner you recruit.</div>
+    <div class="card">
+      <div style="font-size:14px;font-weight:700;margin-bottom:3px">Homeowner Referral Link</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">$50 gift card + free consult · Opens homeowner offer page</div>
+      <div class="lbox"><div class="lurl">solarlinkpro.com/ref/dlynch</div><button class="cbtn" onclick="showToast('Copied!')">Copy</button></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px">
+        <button class="btn bg bsm" onclick="showToast('Opening Messages...')">💬 Text</button>
+        <button class="btn bg bsm" onclick="showToast('Opening email...')">✉ Email</button>
+        <button class="btn bg bsm" onclick="showToast('Generating QR...')">⌗ QR</button>
+        <button class="btn bg bsm" onclick="nav('homeowner',null)">Preview page →</button>
+      </div>
+      <div style="display:flex;gap:16px"><span style="font-size:12px;color:var(--text2)"><b style="color:var(--text)">47</b> clicks</span><span style="font-size:12px;color:var(--text2)"><b style="color:var(--text)">8</b> leads</span><span style="font-size:12px;color:var(--text2)"><b style="color:var(--text)">2</b> installs</span></div>
+    </div>
+    <div class="card">
+      <div style="font-size:14px;font-weight:700;margin-bottom:3px">Partner Recruitment Link</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Invite agents, MLOs, roofers — earn override on their installs</div>
+      <div class="lbox"><div class="lurl">solarlinkpro.com/join/dlynch</div><button class="cbtn" onclick="showToast('Copied!')">Copy</button></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn bg bsm" onclick="showToast('Copied!')">💬 Text</button><button class="btn bg bsm" onclick="nav('partner',null)">Preview page →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MARKETING ═══ -->
+<div class="scr" id="scr-marketing">
+  <div class="tbar"><div class="bc">SolarLink / <b>Marketing Materials</b></div></div>
+  <div class="pc">
+    <div class="pgt">Marketing Materials</div>
+    <div class="pgs">Everything you need to share SolarLink professionally. Choose your audience to find the right tools.</div>
+    <div style="margin-bottom:14px"><span class="ptab on" onclick="selProf(this,'all')">All</span><span class="ptab" onclick="selProf(this,'re')">Realtors</span><span class="ptab" onclick="selProf(this,'mlo')">MLOs</span><span class="ptab" onclick="selProf(this,'roofer')">Roofers</span><span class="ptab" onclick="selProf(this,'gen')">General</span></div>
+    <div id="mkt-wrap">
+      <div class="mod" onclick="showToast('Downloading...')"><div class="mi"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div><div><div style="font-size:13px;font-weight:600">Homeowner One-Pager</div><div style="font-size:10px;color:var(--text3)">PDF · Leave behind · All audiences</div></div></div>
+      <div class="mod" onclick="showToast('Downloading...')"><div class="mi"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div><div><div style="font-size:13px;font-weight:600">Real Estate Agent Packet</div><div style="font-size:10px;color:var(--text3)">PDF · Realtors · Includes override explanation</div></div></div>
+      <div class="mod" onclick="showToast('Downloading...')"><div class="mi"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div><div><div style="font-size:13px;font-weight:600">25-Year Utility vs Solar Projection</div><div style="font-size:10px;color:var(--text3)">PDF · Leave behind · All audiences</div></div></div>
+      <div class="mod" onclick="showToast('Downloading...')"><div class="mi"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div><div><div style="font-size:13px;font-weight:600">Tesla Powerwall Explainer</div><div style="font-size:10px;color:var(--text3)">PDF · Battery backup education</div></div></div>
+      <div class="mod" onclick="showToast('Downloading...')"><div class="mi"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><div><div style="font-size:13px;font-weight:600">Social Media Graphics Pack</div><div style="font-size:10px;color:var(--text3)">ZIP · Instagram + Facebook</div></div></div>
+      <div class="mod" onclick="showToast('Downloading...')"><div class="mi"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><div><div style="font-size:13px;font-weight:600">Open House Flyer</div><div style="font-size:10px;color:var(--text3)">PDF · Realtors · Print ready</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MY NETWORK ═══ -->
+<div class="scr" id="scr-network">
+  <div class="tbar"><div class="bc">SolarLink / <b>My Network</b></div><div class="tbar-r"><button class="btn bp bsm" onclick="showToast('Add contact form open!')">+ Add Contact</button></div></div>
+  <div class="pc">
+    <div class="pgt">My Network</div>
+    <div class="pgs">Think through your warm network. Who do you know that owns a home and pays an electric bill? That's your list.</div>
+    <div class="ban ban-b"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/></svg>You don't need a big list. Start with 10 people you genuinely know and trust. Quality matters more than quantity.</div>
+    <div class="card"><div class="ct">My First 10</div>
+      <div class="nc"><div class="nc-av">JD</div><div><div class="nc-name">Jane Doe</div><div class="nc-rel">Past client · Realtor · $240/mo bill</div></div><div class="nc-status"><span class="badge b-blue">Referral Submitted</span></div></div>
+      <div class="nc"><div class="nc-av">MT</div><div><div class="nc-name">Marcus Thompson</div><div class="nc-rel">Friend · Homeowner · Scottsdale</div></div><div class="nc-status"><span class="badge b-green">Appt Scheduled</span></div></div>
+      <div class="nc"><div class="nc-av">SK</div><div><div class="nc-name">Sarah Kim</div><div class="nc-rel">Neighbor · Homeowner · Tempe</div></div><div class="nc-status"><span class="badge b-green">Installed ✓</span></div></div>
+      <div class="nc"><div class="nc-av">LP</div><div><div class="nc-name">Linda Park</div><div class="nc-rel">Mortgage client · $270/mo bill</div></div><div class="nc-status"><span class="badge b-yellow">Contacted</span></div></div>
+      <div class="nc"><div class="nc-av">TR</div><div><div class="nc-name">Tom Rivera</div><div class="nc-rel">Neighbor · High summer bills</div></div><div class="nc-status"><span class="badge b-gray">Intro Sent</span></div></div>
+      <div class="nc"><div class="nc-av">?</div><div><div class="nc-name">Add 5 more people...</div><div class="nc-rel">Homeowners, past clients, neighbors</div></div><div class="nc-status"><button class="btn bg bsm" onclick="showToast('Add contact!')">+ Add</button></div></div>
+    </div>
+    <div class="card"><div class="ct">Partner Network — People You've Recruited</div>
+      <div class="nc"><div class="nc-av" style="background:var(--gbg);color:var(--gtext)">AM</div><div><div class="nc-name">Alex M. · Realtor</div><div class="nc-rel">Recruited May 3 · 2 installs</div></div><div class="nc-status"><div style="font-size:13px;font-weight:700;color:var(--green)">+$400</div></div></div>
+      <div class="nc"><div class="nc-av" style="background:var(--gbg);color:var(--gtext)">PS</div><div><div class="nc-name">Priya S. · MLO</div><div class="nc-rel">Recruited Apr 28 · 1 install</div></div><div class="nc-status"><div style="font-size:13px;font-weight:700;color:var(--green)">+$200</div></div></div>
+      <div class="nc"><div class="nc-av">RT</div><div><div class="nc-name">Rachel T. · Insurance</div><div class="nc-rel">Recruited May 9 · 0 installs yet</div></div><div class="nc-status"><span class="badge b-gray">Onboarding</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EARNINGS ═══ -->
+<div class="scr" id="scr-earnings">
+  <div class="tbar"><div class="bc">SolarLink / <b>Earnings Potential</b></div></div>
+  <div class="pc">
+    <div class="pgt">Earnings Potential</div>
+    <div class="pgs">Projections only — not guarantees. Based on average $3,500/install commission.</div>
+    <div class="card">
+      <div class="ct">Your Numbers</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><div style="font-size:12px;color:var(--text2);width:145px">My installs/month</div><input type="range" id="r1" min="1" max="20" value="4" step="1" oninput="calcEarn()"><span id="v1" style="font-size:14px;font-weight:700;min-width:20px">4</span></div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><div style="font-size:12px;color:var(--text2);width:145px">Partners I recruit</div><input type="range" id="r2" min="0" max="20" value="3" step="1" oninput="calcEarn()"><span id="v2" style="font-size:14px;font-weight:700;min-width:20px">3</span></div>
+      <div style="display:flex;align-items:center;gap:12px"><div style="font-size:12px;color:var(--text2);width:145px">Their installs/each</div><input type="range" id="r3" min="0" max="10" value="2" step="1" oninput="calcEarn()"><span id="v3" style="font-size:14px;font-weight:700;min-width:20px">2</span></div>
+      <div style="background:var(--gbg);border:1px solid #a7f3d0;border-radius:9px;padding:13px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:12px">
+        <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--gtext)" id="c1">$14,000</div><div style="font-size:10px;color:var(--text2)">Direct/mo</div></div>
+        <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--gtext)" id="c2">$1,800</div><div style="font-size:10px;color:var(--text2)">Network/mo</div></div>
+        <div style="text-align:center"><div style="font-size:20px;font-weight:700;color:var(--gtext)" id="c3">$15,800</div><div style="font-size:10px;color:var(--text2)">Total/mo</div></div>
+      </div>
+      <div style="margin-top:9px;background:var(--abg);border-radius:8px;padding:9px;font-size:12px;color:var(--atext);text-align:center">Annual projection: <b id="c-ann">$189,600</b> · Projections only, not guarantees</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HELP CENTER ═══ -->
+<div class="scr" id="scr-help">
+  <div class="tbar"><div class="bc">SolarLink / <b>Help Center</b></div></div>
+  <div class="pc">
+    <div class="pgt">Help Center</div>
+    <div class="pgs">You are not alone. Use AI for speed. Use your BDP for anything that matters.</div>
+
+    <div class="two">
+      <div>
+        <div class="card" style="border-color:var(--blue)">
+          <div class="ct">Your BDP — Kanoa Nartatez</div>
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+            <div style="width:40px;height:40px;border-radius:50%;background:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff">KN</div>
+            <div><div style="font-size:13px;font-weight:700">Kanoa Nartatez</div><div style="font-size:11px;color:var(--text3)">Business Development Partner</div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="btn bp bfl bsm" onclick="showToast('Opening message...')">💬 Message Kanoa</button>
+            <button class="btn bg bfl bsm" onclick="showToast('Opening calendar...')">📅 Book a Call</button>
+            <button class="btn bg bfl bsm" onclick="showToast('Opening group text...')">👥 Group Text</button>
+            <button class="btn bg bfl bsm" onclick="showToast('(813) 555-0100 copied')">📞 Call Kanoa</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="ct">Your DSP — Alex Johnson</div>
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--blue2);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff">AJ</div>
+            <div><div style="font-size:13px;font-weight:700">Alex Johnson</div><div style="font-size:11px;color:var(--text3)">Dedicated Solar Professional</div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="btn bp bfl bsm" onclick="nav('submit',null)">+ Submit Referral</button>
+            <button class="btn bg bfl bsm" onclick="showToast('(602) 555-0182 copied')">📞 Call Alex</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="ct">Ask AI Anything</div>
+          <div style="background:#f8fafc;border-radius:8px;padding:12px;margin-bottom:10px">
+            <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Common help topics:</div>
+            <div class="chip" onclick="sunQ('What should I say to a realtor?')" style="margin:3px">What to say to a realtor</div>
+            <div class="chip" onclick="sunQ('How do I explain solar simply?')" style="margin:3px">Explain solar simply</div>
+            <div class="chip" onclick="sunQ('How and when do I get paid?')" style="margin:3px">How I get paid</div>
+            <div class="chip" onclick="sunQ('How do I submit a solar referral?')" style="margin:3px">Submit a referral</div>
+            <div class="chip" onclick="sunQ('Will SolarLink pressure my client?')" style="margin:3px">Client trust</div>
+          </div>
+          <button class="btn bp bfl" onclick="toggleSunny()">✨ Open AI Assistant</button>
+        </div>
+        <div class="card">
+          <div class="ct">Live Support Events</div>
+          <div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #f8fafc"><div style="font-size:13px;font-weight:700">New Partner Activation Call</div><div style="font-size:12px;color:var(--text2)">Tues &amp; Thurs · 11 AM PT</div><button class="btn bg bsm" style="margin-top:5px">Register →</button></div>
+          <div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #f8fafc"><div style="font-size:13px;font-weight:700">Partner Office Hours</div><div style="font-size:12px;color:var(--text2)">Fridays · 10 AM PT · Open Q&amp;A</div><button class="btn bg bsm" style="margin-top:5px">Join →</button></div>
+          <div><div style="font-size:13px;font-weight:700">Submit a Support Request</div><div style="font-size:12px;color:var(--text2)">Response within 4 business hours</div><button class="btn bg bsm" style="margin-top:5px">Submit Ticket →</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ AGENCY ═══ -->
+<div class="scr" id="scr-agency">
+  <div class="tbar"><div class="bc">SolarLink / <b>Agency Dashboard</b></div><div class="tbar-r"><button class="btn bp bsm" onclick="showToast('Invite link copied!')">+ Invite Agents</button></div></div>
+  <div class="pc">
+    <div class="pgt">eMortgage Capital</div>
+    <div class="pgs">Agency CEO view · 47 agents invited · Assigned DSP: Alex Johnson</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px">
+      <div class="st"><div class="sl">Invited</div><div class="sv">47</div></div>
+      <div class="st"><div class="sl">Registered</div><div class="sv" style="color:var(--blue)">34</div><div class="ss">72%</div></div>
+      <div class="st"><div class="sl">Onboarded</div><div class="sv" style="color:var(--amber)">21</div></div>
+      <div class="st"><div class="sl">Activated</div><div class="sv" style="color:var(--green)">9</div><div class="ss">Lead + intro sent</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px">
+      <div class="st"><div class="sl">Referrals</div><div class="sv">23</div></div>
+      <div class="st"><div class="sl">Intros Sent</div><div class="sv">16</div><div class="ss" style="color:var(--amber)">7 pending</div></div>
+      <div class="st"><div class="sl">Consults</div><div class="sv">11</div></div>
+      <div class="st"><div class="sl">Commissions</div><div class="sv" style="color:var(--green)">$6,400</div></div>
+    </div>
+    <div class="ban ban-y"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><b>13 agents stuck in onboarding.</b> They signed up but haven't met their DSP or submitted a referral. <a href="#" style="color:var(--atext);font-weight:700">Send nudge →</a></div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="rt">
+        <thead><tr><th>Agent</th><th>Status</th><th>DSP Met</th><th>Referrals</th><th>Installs</th><th>Last Active</th></tr></thead>
+        <tbody>
+          <tr><td><div class="ln">Sarah M.</div><div style="font-size:10px;color:var(--text3)">Realtor</div></td><td><span class="badge b-green">Activated</span></td><td style="color:var(--green);font-weight:700">✓</td><td>4</td><td>2</td><td style="font-size:11px">Today</td></tr>
+          <tr><td><div class="ln">James K.</div><div style="font-size:10px;color:var(--text3)">MLO</div></td><td><span class="badge b-green">Activated</span></td><td style="color:var(--green);font-weight:700">✓</td><td>3</td><td>1</td><td style="font-size:11px">1d</td></tr>
+          <tr><td><div class="ln">Priya L.</div><div style="font-size:10px;color:var(--text3)">Realtor</div></td><td><span class="badge b-blue">Onboarded</span></td><td style="color:var(--amber);font-weight:700">Scheduled</td><td>1</td><td>0</td><td style="font-size:11px">2d</td></tr>
+          <tr><td><div class="ln">Tom R.</div><div style="font-size:10px;color:var(--text3)">Insurance</div></td><td><span class="badge b-yellow">Registered</span></td><td>—</td><td>0</td><td>0</td><td style="font-size:11px;color:var(--red)">8d</td></tr>
+          <tr><td colspan="6" style="text-align:center;color:var(--text3);font-size:12px;padding:8px">+ 43 more agents · 13 inactive</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HOMEOWNER PAGE ═══ -->
+<div class="scr" id="scr-homeowner">
+  <div class="tbar"><div class="bc"><b>Preview:</b> Homeowner Offer Page</div><button class="btn bg bsm" onclick="nav('links',null)">← Back</button></div>
+  <div style="background:#0a1626;min-height:100vh">
+    <div class="pub-nav" style="background:#0a1626;border-color:rgba(255,255,255,0.08)">
+      <svg width="24" height="24" viewBox="0 0 100 100" fill="none"><path d="M50 8L88 38v46q0 4-4 4H16q-4 0-4-4V38Z" stroke="#5aa4e0" stroke-width="6" stroke-linejoin="round"/><path d="M28 48Q50 70 72 48Q60 56 28 48Z" fill="#5aa4e0"/></svg>
+      <span style="font-size:14px;font-weight:700;color:#fff;margin-left:6px">SolarLink</span>
+      <span style="font-size:11px;color:rgba(255,255,255,0.4);margin-left:6px">· Referred by Daniel Lynch</span>
+    </div>
+    <div class="pub-hero" style="padding:46px 24px 36px">
+      <div style="font-size:11px;font-weight:700;color:var(--blue3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">A New Era of Electricity</div>
+      <h1>Use your roof to lower your power cost</h1>
+      <p>Free, no-pressure consultation. Tesla-certified team. $50 gift card just for the meeting. For qualified homeowners — no large upfront deposit.</p>
+      <div style="max-width:480px;margin:0 auto 20px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.1)">
+        <iframe width="100%" height="260" src="https://www.youtube.com/embed/r5yFIEjSyQk?rel=0&modestbranding=1" title="SolarLink" frameborder="0" allowfullscreen></iframe>
+      </div>
+      <div class="pub-fc">
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px;text-align:left">Get your free quote + $50 gift card</div>
+        <div class="fg"><input type="text" placeholder="Your full name"></div>
+        <div class="fg"><input type="tel" placeholder="Phone number"></div>
+        <div class="fg"><input type="text" placeholder="Home address"></div>
+        <div class="fg" style="margin-bottom:6px"><input type="text" placeholder="Avg monthly electric bill ($)"></div>
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 0 12px"><input type="checkbox" style="width:14px;height:14px;flex-shrink:0;margin-top:2px"><div style="font-size:11px;color:var(--text2);line-height:1.5">I agree to be contacted by SolarLink regarding my solar inquiry.</div></div>
+        <button class="btn by bfl" style="font-size:13px;padding:11px" onclick="nav('giftcard',null)">Claim Free Consult + $50 Gift Card →</button>
+        <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:7px">For qualified homeowners · No purchase required · No pushy sales</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ GIFT CARD ═══ -->
+<div class="scr" id="scr-giftcard">
+  <div class="tbar"><div class="bc">SolarLink / <b>Gift Card Reserved</b></div><button class="btn bg bsm" onclick="nav('homeowner',null)">← Back</button></div>
+  <div style="display:flex;align-items:center;justify-content:center;min-height:80vh;padding:20px">
+    <div style="background:var(--white);border:2px solid var(--green);border-radius:14px;padding:26px;text-align:center;max-width:320px;width:100%">
+      <div style="font-size:40px;margin-bottom:12px">🎁</div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:6px">Your $50 gift card is reserved!</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6">We'll reach out within 24 hours. Your gift card arrives after the consult — no purchase required.</div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:7px">Choose your gift card</div>
+      <div style="display:flex;gap:9px;justify-content:center;margin-bottom:14px">
+        <div class="gc-opt on" id="gc-a" onclick="selGC('a')">Amazon</div>
+        <div class="gc-opt" id="gc-h" onclick="selGC('h')">Home Depot</div>
+      </div>
+      <button class="btn bp bfl" onclick="showToast('Confirmed! See you at your consult.')">Confirm Selection</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PARTNER PAGE ═══ -->
+<div class="scr" id="scr-partner">
+  <div class="tbar"><div class="bc"><b>Preview:</b> Partner Invite Page</div><button class="btn bg bsm" onclick="nav('links',null)">← Back</button></div>
+  <div style="background:#0a1626;min-height:100vh">
+    <div class="pub-nav" style="background:#0a1626;border-color:rgba(255,255,255,0.08)">
+      <svg width="24" height="24" viewBox="0 0 100 100" fill="none"><path d="M50 8L88 38v46q0 4-4 4H16q-4 0-4-4V38Z" stroke="#5aa4e0" stroke-width="6" stroke-linejoin="round"/><path d="M28 48Q50 70 72 48Q60 56 28 48Z" fill="#5aa4e0"/></svg>
+      <span style="font-size:14px;font-weight:700;color:#fff;margin-left:6px">SolarLink</span>
+      <span style="font-size:11px;color:rgba(255,255,255,0.4);margin-left:6px">· Invited by Daniel Lynch</span>
+    </div>
+    <div class="pub-hero">
+      <h1>Your clients are already hearing about solar from someone</h1>
+      <p>Make sure they hear it from you — with a trusted professional handling the conversation. Free to join. No solar knowledge required. You introduce. We handle the rest.</p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap">
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:9px;padding:11px 16px;text-align:center"><div style="font-size:19px;font-weight:700;color:#fff">$3,500</div><div style="font-size:10px;color:rgba(255,255,255,0.5)">Avg per install</div></div>
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:9px;padding:11px 16px;text-align:center"><div style="font-size:19px;font-weight:700;color:#fff">BDP</div><div style="font-size:10px;color:rgba(255,255,255,0.5)">Personal onboarding partner</div></div>
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:9px;padding:11px 16px;text-align:center"><div style="font-size:19px;font-weight:700;color:#fff">DSP</div><div style="font-size:10px;color:rgba(255,255,255,0.5)">Expert takes care of your client</div></div>
+      </div>
+      <div class="pub-fc">
+        <div style="font-size:14px;font-weight:700;margin-bottom:11px;text-align:left">Create your free partner account</div>
+        <div class="fg"><input type="text" placeholder="Full name"></div>
+        <div class="fg"><input type="email" placeholder="Email"></div>
+        <div class="fg"><input type="tel" placeholder="Phone"></div>
+        <div class="fg" style="margin-bottom:13px"><select><option>Your profession...</option><option>Real estate agent</option><option>MLO / mortgage broker</option><option>Insurance agent</option><option>Roofer / contractor</option><option>CPA</option><option>Business owner</option><option>Other</option></select></div>
+        <button class="btn by bfl" style="font-size:13px;padding:11px" onclick="showToast('Account created! Your BDP will reach out within 24 hours.')">Join SolarLink — Free →</button>
+        <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:7px">Free · No solar knowledge required · Your BDP guides you every step</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SMS ═══ -->
+<div class="scr" id="scr-sms">
+  <div class="tbar"><div class="bc"><b>Preview:</b> SMS Notifications</div></div>
+  <div class="pc">
+    <div class="pgt">Automated SMS Updates</div>
+    <div class="pgs">Every key milestone triggers an automatic text. Nobody wonders what's happening.</div>
+    <div class="two">
+      <div><div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:9px">Partner (Daniel) receives</div>
+        <div style="width:200px;background:#1a1a2e;border-radius:28px;padding:12px 8px;margin:0 auto"><div style="width:60px;height:15px;background:#0f1623;border-radius:8px;margin:0 auto 8px"></div><div style="background:#fff;border-radius:19px;overflow:hidden;padding:9px">
+          <div style="background:var(--pale);border-radius:9px;padding:8px 10px;margin-bottom:7px;font-size:10.5px;color:var(--blue2);line-height:1.5"><div style="font-size:9px;font-weight:700;margin-bottom:2px">SolarLink</div>Referral received for Jane Doe! Alex will reach out within 24 hours. Track at solarlinkpro.com/portal<div style="font-size:9px;color:var(--text3);margin-top:2px">May 11 · 3:46 PM</div></div>
+          <div style="background:var(--gbg);border-radius:9px;padding:8px 10px;font-size:10.5px;color:var(--gtext);line-height:1.5"><div style="font-size:9px;font-weight:700;margin-bottom:2px">SolarLink</div>Sarah Kim's system installed! Your $800 commission is confirmed. Payout Jun 1. Keep it up!<div style="font-size:9px;color:var(--text3);margin-top:2px">May 8 · 4:01 PM</div></div>
+        </div></div>
+      </div>
+      <div><div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:9px">Homeowner (Jane) receives</div>
+        <div style="width:200px;background:#1a1a2e;border-radius:28px;padding:12px 8px;margin:0 auto"><div style="width:60px;height:15px;background:#0f1623;border-radius:8px;margin:0 auto 8px"></div><div style="background:#fff;border-radius:19px;overflow:hidden;padding:9px">
+          <div style="background:var(--pale);border-radius:9px;padding:8px 10px;margin-bottom:7px;font-size:10.5px;color:var(--blue2);line-height:1.5"><div style="font-size:9px;font-weight:700;margin-bottom:2px">SolarLink</div>Hi Jane! Daniel Lynch introduced you to SolarLink. Alex Johnson will reach out shortly for a free, no-pressure solar review. No commitment needed.<div style="font-size:9px;color:var(--text3);margin-top:2px">May 11 · 5:10 PM</div></div>
+          <div style="background:var(--pale);border-radius:9px;padding:8px 10px;font-size:10.5px;color:var(--blue2);line-height:1.5"><div style="font-size:9px;font-weight:700;margin-bottom:2px">SolarLink</div>Reminder: Your solar consult is tomorrow at 2 PM. Your $50 gift card is waiting! 🎁<div style="font-size:9px;color:var(--text3);margin-top:2px">May 14 · 10 AM</div></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- SUNNY -->
+<div class="sunny-fab" onclick="toggleSunny()">
+  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+  <div class="sun-dot">1</div>
+</div>
+<div class="sun-panel" id="sunny-panel">
+  <div class="sun-hd"><div class="sun-av"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg></div><div><div class="sun-nm">SolarLink AI</div><div class="sun-st">Ask me anything · Kanoa reviews if needed</div></div><button class="sun-x" onclick="toggleSunny()">×</button></div>
+  <div class="sun-msgs" id="sun-msgs"><div class="msg msg-s">Hey Daniel! I'm here to help you move faster. Ask me anything — and if it's something important, I'll suggest you send it to Kanoa for a human review.</div></div>
+  <div class="chips">
+    <div class="chip" onclick="sunQ('How do I submit a solar referral?')">Submit a referral?</div>
+    <div class="chip" onclick="sunQ('What should I say to a realtor?')">What to say to a realtor?</div>
+    <div class="chip" onclick="sunQ('How and when do I get paid?')">How I get paid?</div>
+    <div class="chip" onclick="sunQ('Will SolarLink pressure my client?')">Will you pressure my client?</div>
+    <div class="chip" onclick="sunQ('What makes a good referral?')">Good referral?</div>
+  </div>
+  <div class="sun-inp-row"><input class="sun-inp" id="sun-inp" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')sendSunny()"><button class="sun-send" onclick="sendSunny()"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button></div>
+</div>
+
+<!-- TOUR -->
+<div class="tour-ov" id="tour-ov">
+  <div class="tour-card">
+    <div class="tdots" id="tdots"></div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:5px" id="tour-title"></div>
+    <div style="font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:13px" id="tour-desc"></div>
+    <div style="display:flex;gap:9px;justify-content:center"><button class="btn bg bsm" onclick="endTour()">Skip</button><button class="btn bp bsm" onclick="nextTour()">Next →</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── DATA ──
+var LEADS=[
+  {name:'Jane Doe',loc:'Phoenix, AZ',date:'May 11',bdg:'b-yellow',btxt:'Intro Pending',bill:'$240/mo',phone:'(555) 555-0123',addr:'123 Saguaro Dr, Phoenix AZ',earn:'~$3,200',esub:'Est. 7 kW · Per agreement · Paid at install',tl:[{done:true,title:'Referral Submitted',time:'May 11 · 3:45 PM',note:'You submitted this referral.'},{done:true,title:'SolarLink Contacted Jane',time:'May 11 · 5:10 PM',note:'Jane confirmed interest.'},{done:false,title:'3-Way Intro',time:'Pending — action needed',note:'Send the intro now so Alex has a warm handoff.'},{done:false,gray:true,title:'Solar Overview',time:'Not yet'},{done:false,gray:true,title:'Install',time:'Not yet'}],notes:['South-facing tile roof. Battery backup interest. Evenings best. — You · May 11']},
+  {name:'Marcus Thompson',loc:'Scottsdale, AZ',date:'May 6',bdg:'b-blue',btxt:'Appt Scheduled',bill:'$310/mo',phone:'(480) 555-0211',addr:'456 Camelback Rd, Scottsdale AZ',earn:'~$3,800',esub:'Est. 8.5 kW',tl:[{done:true,title:'Referral Submitted',time:'May 6'},{done:true,title:'Intro Sent',time:'May 6',note:'Alex reached out within 18 min.'},{done:true,title:'Appt Scheduled',time:'May 12',note:'Thu May 15 at 2 PM.'}],notes:['High intent. Been looking at solar 6 months. — You · May 6']},
+  {name:'Sarah Kim',loc:'Tempe, AZ',date:'Apr 20',bdg:'b-green',btxt:'Paid ✓',bill:'$195/mo',phone:'(602) 555-0334',addr:'789 Mill Ave, Tempe AZ',earn:'$800',esub:'7.2 kW · May 8 · Commission confirmed',tl:[{done:true,title:'Referral Submitted',time:'Apr 20'},{done:true,title:'Intro Sent',time:'Apr 20'},{done:true,title:'Overview Completed',time:'Apr 25'},{done:true,title:'Contract Signed',time:'Apr 28'},{done:true,green:true,title:'System Installed ✓',time:'May 8',note:'$800 commission confirmed. Payout Jun 1.'}],notes:['Past client. Easy referral. — You · Apr 20']},
+  {name:'Tom Rivera',loc:'Mesa, AZ',date:'May 6',bdg:'b-gray',btxt:'Contacted',bill:'$180/mo',phone:'(480) 555-0567',addr:'321 Main St, Mesa AZ',earn:'~$2,800',esub:'Est. 6.5 kW',tl:[{done:true,title:'Referral Submitted',time:'May 6'},{done:true,title:'Intro Sent',time:'May 6'},{done:true,title:'Alex Left Voicemail',time:'May 7',note:'Following up.'}],notes:['Neighbor. High summer bills. — You · May 6']},
+  {name:'Linda Park',loc:'Gilbert, AZ',date:'Apr 15',bdg:'b-blue',btxt:'Appt Scheduled',bill:'$270/mo',phone:'(480) 555-0789',addr:'555 Williams Field Rd',earn:'~$3,500',esub:'Est. 7.8 kW',tl:[{done:true,title:'Referral Submitted',time:'Apr 15'},{done:true,title:'Intro Sent',time:'Apr 15'},{done:true,title:'Appt Scheduled',time:'Apr 18',note:'Wed May 14 at 10 AM.'}],notes:['Mortgage client. High intent. — You · Apr 15']}
+];
+
+var SM={welcome:'scr-welcome',dashboard:'scr-dashboard',starthere:'scr-starthere',bdp:'scr-bdp',dsp:'scr-dsp',whysolar:'scr-whysolar',book:'scr-book',submit:'scr-submit',track:'scr-track',detail:'scr-detail',intro:'scr-intro',commissions:'scr-commissions',scripts:'scr-scripts',ai:'scr-ai',links:'scr-links',marketing:'scr-marketing',network:'scr-network',earnings:'scr-earnings',help:'scr-help',agency:'scr-agency',homeowner:'scr-homeowner',giftcard:'scr-giftcard',partner:'scr-partner',sms:'scr-sms'};
+
+function nav(id,el){
+  Object.values(SM).forEach(function(s){var e=document.getElementById(s);if(e)e.classList.remove('on')});
+  var s=document.getElementById(SM[id]);if(s)s.classList.add('on');
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on')});
+  if(el&&el.classList)el.classList.add('on');
+  document.getElementById('main').scrollTop=0;
+  var bd=document.getElementById('bdrop');if(bd)bd.classList.remove('on');
+}
+
+function loginIn(){
+  var l=document.getElementById('login-ov');
+  l.style.opacity='0';l.style.transition='opacity .4s';
+  setTimeout(function(){l.style.display='none';},400);
+}
+
+function openLead(i){
+  var L=LEADS[i];
+  document.getElementById('d-bc').textContent=L.name;
+  document.getElementById('d-name').textContent=L.name;
+  var b=document.getElementById('d-badge');b.className='badge '+L.bdg;b.textContent=L.btxt;
+  document.getElementById('d-meta').textContent='Submitted '+L.date+' · '+L.loc;
+  document.getElementById('d-phone').textContent=L.phone;
+  document.getElementById('d-addr').textContent=L.addr;
+  document.getElementById('d-bill').textContent=L.bill;
+  document.getElementById('d-earn').textContent=L.earn;
+  document.getElementById('d-esub').textContent=L.esub;
+  document.getElementById('intro-hw').textContent=L.name.split(' ')[0];
+  document.getElementById('intro-hw2').textContent=L.name.split(' ')[0];
+  var tl=document.getElementById('d-tl');tl.innerHTML='';
+  L.tl.forEach(function(t){
+    var li=document.createElement('li');li.className='tli';
+    var dc=t.green?'td green':t.done?'td done':t.gray?'td gray':'td';
+    var ic=t.done||t.green?'<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>':'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/></svg>';
+    li.innerHTML='<div class="'+dc+'">'+ic+'</div><div><div class="tt"'+(t.gray?' style="color:var(--text3)"':'')+'>'+t.title+'</div><div class="ts">'+t.time+'</div>'+(t.note?'<div class="tn">'+t.note+'</div>':'')+'</div>';
+    tl.appendChild(li);
+  });
+  var nl=document.getElementById('d-notes');nl.innerHTML='';
+  L.notes.forEach(function(n){var d=document.createElement('div');d.className='tn';d.style.marginBottom='7px';d.textContent=n;nl.appendChild(d);});
+  nav('detail',null);
+}
+
+function addNote(){var ta=document.getElementById('new-note');var t=ta.value.trim();if(!t)return;var nl=document.getElementById('d-notes');var d=document.createElement('div');d.className='tn';d.style.marginBottom='7px';d.textContent=t+' — You · Just now';nl.appendChild(d);ta.value='';showToast('Note added.');}
+function submitLead(){var n=document.getElementById('sub-fn').value.trim()||'New Homeowner';showToast('Referral submitted for '+n+'! Send the 3-way intro next.');setTimeout(function(){nav('intro',null);},500);}
+function toggleCb(el){if(!el.classList){showToast('Step marked complete!');return;}var dn=el.classList.toggle('dn');el.innerHTML=dn?'<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>':'';var lb=el.parentElement.querySelector('.cl');if(lb)lb.classList.toggle('dn',dn);}
+function toggleStep(id){var b=document.getElementById(id).querySelector('.ob-body');if(b)b.style.display=b.style.display==='none'?'block':'';}
+function toggleBell(){document.getElementById('bdrop').classList.toggle('on');}
+document.addEventListener('click',function(e){if(!e.target.closest('.bell'))document.getElementById('bdrop').classList.remove('on');});
+function selGC(t){document.getElementById('gc-a').className='gc-opt'+(t==='a'?' on':'');document.getElementById('gc-h').className='gc-opt'+(t==='h'?' on':'');}
+function selDay(el){document.querySelectorAll('.cal-d.on').forEach(function(d){d.classList.remove('on')});el.classList.add('on');}
+function selSlot(el){document.querySelectorAll('.tslot.on').forEach(function(s){s.classList.remove('on')});el.classList.add('on');}
+function toggleAcc(el){el.classList.toggle('on');}
+function calcEarn(){var i=+document.getElementById('r1').value,p=+document.getElementById('r2').value,pi=+document.getElementById('r3').value;document.getElementById('v1').textContent=i;document.getElementById('v2').textContent=p;document.getElementById('v3').textContent=pi;var d=i*3500,n=p*pi*300,tot=d+n;document.getElementById('c1').textContent='$'+d.toLocaleString();document.getElementById('c2').textContent='$'+n.toLocaleString();document.getElementById('c3').textContent='$'+tot.toLocaleString();document.getElementById('c-ann').textContent='$'+(tot*12).toLocaleString();}
+function buildIntro(){var hw=document.getElementById('ib-hw').value||'[Homeowner]';var why=document.getElementById('ib-why').value;var w=why?' '+why+'.':'';document.getElementById('intro-preview').innerHTML='"Hey <span class="sh">'+hw+'</span>, I want to introduce you to <b>Alex Johnson</b> with SolarLink — he helps homeowners see if solar makes sense, without pressure.<br><br>Alex, this is <span class="sh">'+hw+'</span>.'+w+' They may be open to learning whether solar could lower or stabilize their electric costs."';}
+
+// Scripts by category
+var SCRIPTS={
+  friends:['<div class="script-cat"><div class="script-cat-title">Opening text <button class="cbtn" onclick="showToast(\'Copied!\')">Copy</button></div><div class="script-box">"Hey [Name], quick question — are you happy with your electric bill? I\'ve been sharing something with homeowners I thought of you for. Free, no pressure. Open to hearing about it?"<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button></div></div>','<div class="script-cat"><div class="script-cat-title">If they say tell me more <button class="cbtn" onclick="showToast(\'Copied!\')">Copy</button></div><div class="script-box">"It\'s a local solar professional I work with. He does a free review based on your actual bill and roof. There\'s also a $50 gift card just for the meeting. Want me to make the intro?"<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button></div></div>'],
+  clients:['<div class="script-cat"><div class="script-cat-title">Past client <button class="cbtn" onclick="showToast(\'Copied!\')">Copy</button></div><div class="script-box">"Hey [Name], hope you\'ve been doing well. Reaching out because I\'ve been connecting past clients with a solar platform I trust. Free, no-pressure review + $50 gift card. Want me to see if your home qualifies?"<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button></div></div>'],
+  realtor:['<div class="script-cat"><div class="script-cat-title">Realtor database text <button class="cbtn" onclick="showToast(\'Copied!\')">Copy</button></div><div class="script-box">"Hey [Name], hope your business is going well. I\'ve been partnering with SolarLink to help homeowners explore solar. It\'s a great reason to reach out to past clients — free consult, $50 gift card, no pressure. Want to learn how it works for your database?"<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button></div></div>'],
+  roofer:['<div class="script-cat"><div class="script-cat-title">Roofer script <button class="cbtn" onclick="showToast(\'Copied!\')">Copy</button></div><div class="script-box">"Hey [Name], while you\'re already on roofs, this might be worth a quick look. I work with SolarLink and we\'re connecting roofers with a simple solar referral program. You refer homeowners, we handle everything, and you earn a commission when they install. Want a 10-minute overview?"<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button></div></div>'],
+  mlo:['<div class="script-cat"><div class="script-cat-title">MLO — past borrower <button class="cbtn" onclick="showToast(\'Copied!\')">Copy</button></div><div class="script-box">"Hey [Name], hope you\'re doing great in the home. I\'ve been sharing a way for homeowners to lower their electric bill using their roof. No big upfront cost for qualified homes. Want me to set up a free review?"<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button></div></div>'],
+  social:['<div class="script-cat"><div class="script-cat-title">Facebook / Instagram post <button class="cbtn" onclick="showToast(\'Copied!\')">Copy</button></div><div class="script-box">"If your electric bill is over $150/month, this might interest you. I\'ve been helping homeowners explore solar through a platform called SolarLink. Free consult + $50 gift card just for meeting with a local solar pro. DM me or check my link: solarlinkpro.com/ref/dlynch"<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button></div></div>'],
+  followup:['<div class="script-cat"><div class="script-cat-title">Follow-up — no reply <button class="cbtn" onclick="showToast(\'Copied!\')">Copy</button></div><div class="script-box">"Hey [Name], just wanted to follow up on the solar thing I mentioned. Totally fine if it\'s not the right time — just wanted to make sure you had the info. Let me know if you ever want me to make that intro."<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button></div></div>']
+};
+function selScripts(el,k){document.querySelectorAll('.ptab').forEach(function(t){t.classList.remove('on')});el.classList.add('on');document.getElementById('script-wrap').innerHTML=(SCRIPTS[k]||SCRIPTS.friends).join('');}
+
+// Marketing materials by profession
+var MKT={
+  all:['Homeowner One-Pager','25-Year Utility vs Solar Projection','Tesla Powerwall Explainer','Social Media Graphics Pack'],
+  re:['Real Estate Agent Packet','Open House Flyer','Past Client Email Template','Roofer Referral Explanation'],
+  mlo:['Mortgage Professional Packet','Past Borrower Email Template','Homeowner One-Pager'],
+  roofer:['Roofer Partnership Packet','Job Site Flyer','Roofer Text Script'],
+  gen:['Homeowner One-Pager','Social Media Graphics Pack','Partner Invite QR Code']
+};
+function selProf(el,k){document.querySelectorAll('.ptab').forEach(function(t){t.classList.remove('on')});el.classList.add('on');var w=document.getElementById('mkt-wrap');w.innerHTML=(MKT[k]||MKT.all).map(function(t){return'<div class="mod" onclick="showToast(\'Downloading...\')"><div class="mi"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div><div><div style="font-size:13px;font-weight:600">'+t+'</div><div style="font-size:10px;color:var(--text3)">Available to download</div></div></div>';}).join('');}
+
+// AI Builder
+var AI_MSGS={
+  'Friend or family member — Solar overview for their home — Casual and friendly':'<span>"Hey [Name]! Quick question — have you ever thought about what it would look like to lower your electric bill with solar? I work with a company called SolarLink and they do free, no-pressure reviews. There\'s even a $50 gift card just for the meeting. Would you be open to me making an intro?"</span>',
+  'Realtor / real estate agent — Become a referral partner — Professional':'<span>"Hi [Name], hope business is going well. I wanted to reach out because I\'ve been working with SolarLink — a solar referral platform that I think would be a great fit for your database. When homeowners you refer go solar, you earn a commission with no extra work. Would you be open to a quick overview of how it works?"</span>',
+  'default':'<span>"Hey [Name], I\'ve been working with a solar referral platform called SolarLink and thought of you. They do free, no-pressure reviews for homeowners — and there\'s a $50 gift card just for the meeting. Would you be open to me making an intro to their local solar professional?"</span>'
+};
+function buildAI(){
+  var who=document.getElementById('ai-who').value;
+  var invite=document.getElementById('ai-invite').value;
+  var tone=document.getElementById('ai-tone').value;
+  var key=who+' — '+invite+' — '+tone;
+  var msg=AI_MSGS[key]||AI_MSGS.default;
+  document.getElementById('ai-result').style.display='block';
+  document.getElementById('ai-output').innerHTML=msg+'<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button>';
+  showToast('Message generated! Review before sending.');
+  setTimeout(function(){document.getElementById('ai-output').scrollIntoView({behavior:'smooth',block:'center'});},100);
+}
+
+var toastT;
+function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.style.transform='translateX(-50%) translateY(0)';clearTimeout(toastT);toastT=setTimeout(function(){t.style.transform='translateX(-50%) translateY(70px)'},3200);}
+
+// Sunny
+var sunOpen=false,sunBusy=false;
+var FAQ={
+  'How do I submit a solar referral?':"Click 'Submit Referral' in the sidebar. Name, phone, and address — that's all you need. Your info is auto-attached. Alex contacts them within 24 hours. After submitting you'll get the 3-way intro script. Takes under 2 minutes.",
+  'What makes a good referral?':"Homeowners who own their home, have an electric bill over $150/mo, and are open to a no-pressure conversation. You don't need to qualify them deeply — that's what the Personalized Solar Overview is for.",
+  'How and when do I get paid?':"You earn a commission when a deal closes, installs, and is funded — per agreement. Average is $3,500/install. Payouts on the 1st of the month following install. Track everything in the Commissions tab.",
+  'Will SolarLink pressure my client?':"Never. Alex's job is an honest assessment — even if solar doesn't make sense for the homeowner. Your reputation is safe. That's the whole point of having a DSP you can trust.",
+  'What should I say to a realtor?':"Try this: 'Hey [Name], I've been working with a solar referral platform and thought of your database. When past clients go solar through your referral, you earn a commission — no extra work. Want a quick overview?' Go to the Scripts tab for the full version.",
+  'How do I explain solar simply?':"Your roof produces power during the day. Your home uses it first. Extra goes back to the grid for credits. The home stays connected to the utility. For qualified homeowners, there's typically no large upfront deposit — the cost is structured over time. That's it.",
+  'What is the 3-way intro?':"A simple text you send to your contact introducing them to Alex. Example: 'Hey [Name], meet Alex with SolarLink. Alex, this is [Name] — they may be open to a solar overview.' Go to the 3-Way Intro Builder to generate it automatically.",
+  'Who is my BDP?':"Your Business Development Partner is Kanoa Nartatez. They are your real human support person — not a bot. They help you get comfortable, understand the portal, and get to your first win. Message or call Kanoa anytime from the Meet Your BDP page."
+};
+function toggleSunny(){sunOpen=!sunOpen;document.getElementById('sunny-panel').classList.toggle('on',sunOpen);document.querySelector('.sun-dot').style.display=sunOpen?'none':'flex';}
+function sunQ(q){addSunMsg(q,'u');showTyping(FAQ[q]||"Check the Help Center or message Kanoa for that one — she responds within a few hours!");}
+function sendSunny(){var inp=document.getElementById('sun-inp');var t=inp.value.trim();if(!t||sunBusy)return;inp.value='';addSunMsg(t,'u');
+  var tl=t.toLowerCase(),r;
+  if(tl.includes('pay')||tl.includes('earn')||tl.includes('commission'))r=FAQ['How and when do I get paid?'];
+  else if(tl.includes('submit')||tl.includes('referral'))r=FAQ['How do I submit a solar referral?'];
+  else if(tl.includes('good')||tl.includes('qualify'))r=FAQ['What makes a good referral?'];
+  else if(tl.includes('pressure')||tl.includes('trust')||tl.includes('client'))r=FAQ['Will SolarLink pressure my client?'];
+  else if(tl.includes('realtor')||tl.includes('agent'))r=FAQ['What should I say to a realtor?'];
+  else if(tl.includes('explain')||tl.includes('how solar'))r=FAQ['How do I explain solar simply?'];
+  else if(tl.includes('intro')||tl.includes('3-way')||tl.includes('three way'))r=FAQ['What is the 3-way intro?'];
+  else if(tl.includes('bdp')||tl.includes('kanoa')||tl.includes('support'))r=FAQ['Who is my BDP?'];
+  else r="I'm still learning that one! Message Kanoa (your BDP) for anything that matters — she responds within a few hours. Want me to suggest how to phrase your question to her?";
+  showTyping(r);
+}
+function addSunMsg(t,ty){var m=document.getElementById('sun-msgs');var d=document.createElement('div');d.className='msg msg-'+ty;d.textContent=t;m.appendChild(d);m.scrollTop=m.scrollHeight;}
+function showTyping(r){sunBusy=true;var m=document.getElementById('sun-msgs');var ty=document.createElement('div');ty.className='msg msg-s typ';ty.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>';m.appendChild(ty);m.scrollTop=m.scrollHeight;setTimeout(function(){m.removeChild(ty);addSunMsg(r,'s');sunBusy=false;setTimeout(function(){if(document.getElementById('sun-msgs').children.length>3){var bdpMsg=document.createElement('div');bdpMsg.className='msg msg-s';bdpMsg.innerHTML='Want your BDP to review this before you act on it?';document.getElementById('sun-msgs').appendChild(bdpMsg);document.getElementById('sun-msgs').scrollTop=99999;}},1200);},1000);}
+
+// Tour
+var TOUR=[
+  {s:'welcome',title:'Welcome Tab',desc:'Every new partner lands here first — video, clear action choices, and an orientation path.'},
+  {s:'starthere',title:'Start Here — 10-Step Launch',desc:'Your self-paced activation journey. Step 4 is active now. Never wonder what to do next.'},
+  {s:'bdp',title:'Meet Your BDP',desc:'Kanoa is your real human guide. Not a bot. They over-serve you until your first win.'},
+  {s:'dsp',title:'Meet Your DSP',desc:'Alex is who takes care of every homeowner you refer. Your reputation is safe with him.'},
+  {s:'submit',title:'Submit a Referral',desc:'2-minute form. Full homeowner details, consent checkbox, notes for Alex. Routes to 3-way intro.'},
+  {s:'track',title:'Track Referrals',desc:'Every referral, every stage, visible. No black holes. Full pipeline from submitted to paid.'},
+  {s:'agency',title:'Agency Dashboard',desc:'For CEOs managing 100+ agents — activation rates, stuck agents, commissions, weekly reports.'}
+];
+var ti=0;
+function startTour(){ti=0;renderTour();document.getElementById('tour-ov').classList.add('on');}
+function renderTour(){var s=TOUR[ti];document.getElementById('tour-title').textContent=s.title;document.getElementById('tour-desc').textContent=s.desc;nav(s.s,null);var d=document.getElementById('tdots');d.innerHTML='';TOUR.forEach(function(_,i){var dt=document.createElement('div');dt.className='tdot'+(i===ti?' on':'');d.appendChild(dt);});}
+function nextTour(){ti++;if(ti>=TOUR.length)endTour();else renderTour();}
+function endTour(){document.getElementById('tour-ov').classList.remove('on');}
+
+// Initialize
+selScripts(document.querySelectorAll('.ptab')[0],'friends');
+</script>
+</body>
+</html>
