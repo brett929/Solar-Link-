@@ -460,7 +460,7 @@ textarea{resize:vertical;min-height:76px}
     <div class="share-bar">
       <div style="flex:1"><div style="font-size:13px;font-weight:700;margin-bottom:2px">Share SolarLink — Everyone pays an electric bill</div><div style="font-size:11px;color:rgba(255,255,255,0.65)">solarlinkpro.com/ref/dlynch · $50 gift card for homeowners</div></div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="share-btn" onclick="showToast('Link copied!')">📋 Copy</button>
+        <button class="share-btn" onclick="copyText('solarlinkpro.com/ref/dlynch')">📋 Copy</button>
         <button class="share-btn" onclick="showToast('Opening Messages...')">💬 Text</button>
         <button class="share-btn" onclick="showToast('Generating QR...')">⌗ QR</button>
       </div>
@@ -864,10 +864,10 @@ textarea{resize:vertical;min-height:76px}
         <div class="card"><div class="ct">Status Timeline</div><ul class="tl" id="d-tl"></ul></div>
         <div class="card"><div class="ct">3-Way Intro Script</div>
           <div class="script-box">
-            <button class="sc-c" onclick="showToast('Copied!')">Copy</button>
+            <button class="sc-c" onclick="copyScript(this)">Copy</button>
             "Hey <span class="sh" id="intro-hw">[Name]</span>, I want to introduce you to <b>Alex Johnson</b> with SolarLink — he helps homeowners see if solar makes sense, without pressure.<br><br>Alex, this is <span class="sh" id="intro-hw2">[Name]</span>. They may be open to learning whether solar could lower their electric costs."
           </div>
-          <div style="display:flex;gap:7px;margin-top:9px"><button class="btn bn2 bsm" onclick="showToast('✓ Intro confirmed! Status updated.')">✓ I Sent It</button></div>
+          <div style="display:flex;gap:7px;margin-top:9px"><button class="btn bn2 bsm" onclick="markIntroSent()">✓ I Sent It</button></div>
         </div>
       </div>
     </div>
@@ -914,20 +914,20 @@ textarea{resize:vertical;min-height:76px}
 
     <div id="script-wrap">
       <div class="script-cat">
-        <div class="script-cat-title">Opening text — friend or family <button class="cbtn" onclick="showToast('Copied!')">Copy</button></div>
-        <div class="script-box">"Hey [Name], quick question — are you happy with your electric bill? I've been sharing something with homeowners that I thought of you for. Totally free, no pressure — just a way to see if there's a better option. Open to hearing about it?"<button class="sc-c" onclick="showToast('Copied!')">Copy</button></div>
+        <div class="script-cat-title">Opening text — friend or family <button class="cbtn" onclick="copyLink(this)">Copy</button></div>
+        <div class="script-box">"Hey [Name], quick question — are you happy with your electric bill? I've been sharing something with homeowners that I thought of you for. Totally free, no pressure — just a way to see if there's a better option. Open to hearing about it?"<button class="sc-c" onclick="copyScript(this)">Copy</button></div>
       </div>
       <div class="script-cat">
-        <div class="script-cat-title">If they say "tell me more" <button class="cbtn" onclick="showToast('Copied!')">Copy</button></div>
-        <div class="script-box">"It's a local solar professional I work with. He runs a free, no-pressure review based on your actual electric bill and roof. If it makes sense, great. If not, he'll tell you. There's even a $50 gift card just for doing the meeting. Want me to make the intro?"<button class="sc-c" onclick="showToast('Copied!')">Copy</button></div>
+        <div class="script-cat-title">If they say "tell me more" <button class="cbtn" onclick="copyLink(this)">Copy</button></div>
+        <div class="script-box">"It's a local solar professional I work with. He runs a free, no-pressure review based on your actual electric bill and roof. If it makes sense, great. If not, he'll tell you. There's even a $50 gift card just for doing the meeting. Want me to make the intro?"<button class="sc-c" onclick="copyScript(this)">Copy</button></div>
       </div>
       <div class="script-cat">
-        <div class="script-cat-title">3-Way intro text <button class="cbtn" onclick="showToast('Copied!')">Copy</button></div>
-        <div class="script-box">"Hey [Name], introducing you to Alex Johnson with SolarLink — he helps homeowners see if solar makes sense, without pressure. Alex, this is [Name]. They may be open to learning whether solar could lower their electric costs."<button class="sc-c" onclick="showToast('Copied!')">Copy</button></div>
+        <div class="script-cat-title">3-Way intro text <button class="cbtn" onclick="copyLink(this)">Copy</button></div>
+        <div class="script-box">"Hey [Name], introducing you to Alex Johnson with SolarLink — he helps homeowners see if solar makes sense, without pressure. Alex, this is [Name]. They may be open to learning whether solar could lower their electric costs."<button class="sc-c" onclick="copyScript(this)">Copy</button></div>
       </div>
       <div class="script-cat">
-        <div class="script-cat-title">Invite a partner <button class="cbtn" onclick="showToast('Copied!')">Copy</button></div>
-        <div class="script-box">"Hey [Name], do you know homeowners who complain about their electric bill? I work with a solar referral platform called SolarLink — free to join, and when homeowners you introduce go solar, you earn a commission. Would you be open to a quick overview?"<button class="sc-c" onclick="showToast('Copied!')">Copy</button></div>
+        <div class="script-cat-title">Invite a partner <button class="cbtn" onclick="copyLink(this)">Copy</button></div>
+        <div class="script-box">"Hey [Name], do you know homeowners who complain about their electric bill? I work with a solar referral platform called SolarLink — free to join, and when homeowners you introduce go solar, you earn a commission. Would you be open to a quick overview?"<button class="sc-c" onclick="copyScript(this)">Copy</button></div>
       </div>
     </div>
 
@@ -961,7 +961,7 @@ textarea{resize:vertical;min-height:76px}
     <div class="card" id="ai-result" style="display:none">
       <div class="ct">Your Generated Message</div>
       <div class="script-box" id="ai-output" style="font-size:13px;line-height:1.7">
-        <button class="sc-c" onclick="showToast('Copied!')">Copy</button>
+        <button class="sc-c" onclick="copyScript(this)">Copy</button>
       </div>
       <div class="btn-row">
         <button class="btn bn2" onclick="showToast('Copied!')">Copy Message</button>
@@ -987,7 +987,7 @@ textarea{resize:vertical;min-height:76px}
       </div>
       <div style="display:flex;gap:7px;flex-wrap:wrap">
         <button class="btn bp" onclick="showToast('Copied! Paste into your texts now.')">📋 Copy Intro</button>
-        <button class="btn bn2" onclick="showToast('✓ Intro confirmed!')">✓ I Sent It</button>
+        <button class="btn bn2" onclick="markIntroSent()">✓ I Sent It</button>
         <button class="btn bg" onclick="showToast('Reminder set for tomorrow.')">Remind me tomorrow</button>
         <button class="btn bsm" style="background:var(--pbg);color:var(--ptext);border:1px solid #c4b5fd" onclick="showToast('Sent to Kanoa!')">Ask BDP to Review</button>
       </div>
@@ -1008,7 +1008,7 @@ textarea{resize:vertical;min-height:76px}
     <div class="card">
       <div style="font-size:14px;font-weight:700;margin-bottom:3px">Homeowner Referral Link</div>
       <div style="font-size:12px;color:var(--text2);margin-bottom:10px">$50 gift card + free consult · Opens homeowner offer page</div>
-      <div class="lbox"><div class="lurl">solarlinkpro.com/ref/dlynch</div><button class="cbtn" onclick="showToast('Copied!')">Copy</button></div>
+      <div class="lbox"><div class="lurl">solarlinkpro.com/ref/dlynch</div><button class="cbtn" onclick="copyLink(this)">Copy</button></div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px">
         <button class="btn bg bsm" onclick="showToast('Opening Messages...')">💬 Text</button>
         <button class="btn bg bsm" onclick="showToast('Opening email...')">✉ Email</button>
@@ -1020,7 +1020,7 @@ textarea{resize:vertical;min-height:76px}
     <div class="card">
       <div style="font-size:14px;font-weight:700;margin-bottom:3px">Partner Recruitment Link</div>
       <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Invite agents, MLOs, roofers — earn override on their installs</div>
-      <div class="lbox"><div class="lurl">solarlinkpro.com/join/dlynch</div><button class="cbtn" onclick="showToast('Copied!')">Copy</button></div>
+      <div class="lbox"><div class="lurl">solarlinkpro.com/join/dlynch</div><button class="cbtn" onclick="copyLink(this)">Copy</button></div>
       <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn bg bsm" onclick="showToast('Copied!')">💬 Text</button><button class="btn bg bsm" onclick="nav('partner',null)">Preview page →</button></div>
     </div>
   </div>
@@ -1046,7 +1046,7 @@ textarea{resize:vertical;min-height:76px}
 
 <!-- ═══ MY NETWORK ═══ -->
 <div class="scr" id="scr-network">
-  <div class="tbar"><div class="bc">SolarLink / <b>My Network</b></div><div class="tbar-r"><button class="btn bp bsm" onclick="showToast('Add contact form open!')">+ Add Contact</button></div></div>
+  <div class="tbar"><div class="bc">SolarLink / <b>My Network</b></div><div class="tbar-r"><button class="btn bp bsm" onclick="showAddContact()">+ Add Contact</button></div></div>
   <div class="pc">
     <div class="pgt">My Network</div>
     <div class="pgs">Think through your warm network. Who do you know that owns a home and pays an electric bill? That's your list.</div>
@@ -1057,7 +1057,7 @@ textarea{resize:vertical;min-height:76px}
       <div class="nc"><div class="nc-av">SK</div><div><div class="nc-name">Sarah Kim</div><div class="nc-rel">Neighbor · Homeowner · Tempe</div></div><div class="nc-status"><span class="badge b-green">Installed ✓</span></div></div>
       <div class="nc"><div class="nc-av">LP</div><div><div class="nc-name">Linda Park</div><div class="nc-rel">Mortgage client · $270/mo bill</div></div><div class="nc-status"><span class="badge b-yellow">Contacted</span></div></div>
       <div class="nc"><div class="nc-av">TR</div><div><div class="nc-name">Tom Rivera</div><div class="nc-rel">Neighbor · High summer bills</div></div><div class="nc-status"><span class="badge b-gray">Intro Sent</span></div></div>
-      <div class="nc"><div class="nc-av">?</div><div><div class="nc-name">Add 5 more people...</div><div class="nc-rel">Homeowners, past clients, neighbors</div></div><div class="nc-status"><button class="btn bg bsm" onclick="showToast('Add contact!')">+ Add</button></div></div>
+      <div class="nc"><div class="nc-av">?</div><div><div class="nc-name">Add 5 more people...</div><div class="nc-rel">Homeowners, past clients, neighbors</div></div><div class="nc-status"><button class="btn bg bsm" onclick="showAddContact()">+ Add</button></div></div>
     </div>
     <div class="card"><div class="ct">Partner Network — People You've Recruited</div>
       <div class="nc"><div class="nc-av" style="background:var(--gbg);color:var(--gtext)">AM</div><div><div class="nc-name">Alex M. · Realtor</div><div class="nc-rel">Recruited May 3 · 2 installs</div></div><div class="nc-status"><div style="font-size:13px;font-weight:700;color:var(--green)">+$400</div></div></div>
@@ -1199,12 +1199,12 @@ textarea{resize:vertical;min-height:76px}
       </div>
       <div class="pub-fc">
         <div style="font-size:14px;font-weight:700;margin-bottom:12px;text-align:left">Get your free quote + $50 gift card</div>
-        <div class="fg"><input type="text" placeholder="Your full name"></div>
-        <div class="fg"><input type="tel" placeholder="Phone number"></div>
-        <div class="fg"><input type="text" placeholder="Home address"></div>
-        <div class="fg" style="margin-bottom:6px"><input type="text" placeholder="Avg monthly electric bill ($)"></div>
+        <div class="fg"><input id="hw-name" type="text" placeholder="Your full name"></div>
+        <div class="fg"><input id="hw-phone" type="tel" placeholder="Phone number"></div>
+        <div class="fg"><input id="hw-addr" type="text" placeholder="Home address"></div>
+        <div class="fg" style="margin-bottom:6px"><input id="hw-bill" type="text" placeholder="Avg monthly electric bill ($)"></div>
         <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 0 12px"><input type="checkbox" style="width:14px;height:14px;flex-shrink:0;margin-top:2px"><div style="font-size:11px;color:var(--text2);line-height:1.5">I agree to be contacted by SolarLink regarding my solar inquiry.</div></div>
-        <button class="btn by bfl" style="font-size:13px;padding:11px" onclick="nav('giftcard',null)">Claim Free Consult + $50 Gift Card →</button>
+        <button class="btn by bfl" style="font-size:13px;padding:11px" onclick="submitHomeownerForm()">Claim Free Consult + $50 Gift Card →</button>
         <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:7px">For qualified homeowners · No purchase required · No pushy sales</div>
       </div>
     </div>
@@ -1248,11 +1248,11 @@ textarea{resize:vertical;min-height:76px}
       </div>
       <div class="pub-fc">
         <div style="font-size:14px;font-weight:700;margin-bottom:11px;text-align:left">Create your free partner account</div>
-        <div class="fg"><input type="text" placeholder="Full name"></div>
-        <div class="fg"><input type="email" placeholder="Email"></div>
-        <div class="fg"><input type="tel" placeholder="Phone"></div>
-        <div class="fg" style="margin-bottom:13px"><select><option>Your profession...</option><option>Real estate agent</option><option>MLO / mortgage broker</option><option>Insurance agent</option><option>Roofer / contractor</option><option>CPA</option><option>Business owner</option><option>Other</option></select></div>
-        <button class="btn by bfl" style="font-size:13px;padding:11px" onclick="showToast('Account created! Your BDP will reach out within 24 hours.')">Join SolarLink — Free →</button>
+        <div class="fg"><input id="pt-name" type="text" placeholder="Full name"></div>
+        <div class="fg"><input id="pt-email" type="email" placeholder="Email"></div>
+        <div class="fg"><input id="pt-phone" type="tel" placeholder="Phone"></div>
+        <div class="fg" style="margin-bottom:13px"><select id="pt-profession"><option>Your profession...</option><option>Real estate agent</option><option>MLO / mortgage broker</option><option>Insurance agent</option><option>Roofer / contractor</option><option>CPA</option><option>Business owner</option><option>Other</option></select></div>
+        <button class="btn by bfl" style="font-size:13px;padding:11px" onclick="submitPartnerForm()">Join SolarLink — Free →</button>
         <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:7px">Free · No solar knowledge required · Your BDP guides you every step</div>
       </div>
     </div>
@@ -1405,6 +1405,8 @@ function nav(id,el){
   document.getElementById('main').scrollTop=0;
   var bd=document.getElementById('bdrop');if(bd)bd.classList.remove('on');
   if(id==='track')loadLeads();
+  if(id==='dashboard')loadDashboardStats();
+  if(id==='network')loadContacts();
 }
 
 function loginIn(){
@@ -1487,13 +1489,13 @@ function buildIntro(){var hw=document.getElementById('ib-hw').value||'[Homeowner
 
 // Scripts by category
 var SCRIPTS={
-  friends:['<div class="script-cat"><div class="script-cat-title">Opening text <button class="cbtn" onclick="showToast(\'Copied!\')">Copy</button></div><div class="script-box">"Hey [Name], quick question — are you happy with your electric bill? I\'ve been sharing something with homeowners I thought of you for. Free, no pressure. Open to hearing about it?"<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button></div></div>','<div class="script-cat"><div class="script-cat-title">If they say tell me more <button class="cbtn" onclick="showToast(\'Copied!\')">Copy</button></div><div class="script-box">"It\'s a local solar professional I work with. He does a free review based on your actual bill and roof. There\'s also a $50 gift card just for the meeting. Want me to make the intro?"<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button></div></div>'],
-  clients:['<div class="script-cat"><div class="script-cat-title">Past client <button class="cbtn" onclick="showToast(\'Copied!\')">Copy</button></div><div class="script-box">"Hey [Name], hope you\'ve been doing well. Reaching out because I\'ve been connecting past clients with a solar platform I trust. Free, no-pressure review + $50 gift card. Want me to see if your home qualifies?"<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button></div></div>'],
-  realtor:['<div class="script-cat"><div class="script-cat-title">Realtor database text <button class="cbtn" onclick="showToast(\'Copied!\')">Copy</button></div><div class="script-box">"Hey [Name], hope your business is going well. I\'ve been partnering with SolarLink to help homeowners explore solar. It\'s a great reason to reach out to past clients — free consult, $50 gift card, no pressure. Want to learn how it works for your database?"<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button></div></div>'],
-  roofer:['<div class="script-cat"><div class="script-cat-title">Roofer script <button class="cbtn" onclick="showToast(\'Copied!\')">Copy</button></div><div class="script-box">"Hey [Name], while you\'re already on roofs, this might be worth a quick look. I work with SolarLink and we\'re connecting roofers with a simple solar referral program. You refer homeowners, we handle everything, and you earn a commission when they install. Want a 10-minute overview?"<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button></div></div>'],
-  mlo:['<div class="script-cat"><div class="script-cat-title">MLO — past borrower <button class="cbtn" onclick="showToast(\'Copied!\')">Copy</button></div><div class="script-box">"Hey [Name], hope you\'re doing great in the home. I\'ve been sharing a way for homeowners to lower their electric bill using their roof. No big upfront cost for qualified homes. Want me to set up a free review?"<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button></div></div>'],
-  social:['<div class="script-cat"><div class="script-cat-title">Facebook / Instagram post <button class="cbtn" onclick="showToast(\'Copied!\')">Copy</button></div><div class="script-box">"If your electric bill is over $150/month, this might interest you. I\'ve been helping homeowners explore solar through a platform called SolarLink. Free consult + $50 gift card just for meeting with a local solar pro. DM me or check my link: solarlinkpro.com/ref/dlynch"<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button></div></div>'],
-  followup:['<div class="script-cat"><div class="script-cat-title">Follow-up — no reply <button class="cbtn" onclick="showToast(\'Copied!\')">Copy</button></div><div class="script-box">"Hey [Name], just wanted to follow up on the solar thing I mentioned. Totally fine if it\'s not the right time — just wanted to make sure you had the info. Let me know if you ever want me to make that intro."<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button></div></div>']
+  friends:['<div class="script-cat"><div class="script-cat-title">Opening text <button class="cbtn" onclick="copyScript(this)">Copy</button></div><div class="script-box">"Hey [Name], quick question — are you happy with your electric bill? I\'ve been sharing something with homeowners I thought of you for. Free, no pressure. Open to hearing about it?"<button class="sc-c" onclick="copyScript(this)">Copy</button></div></div>','<div class="script-cat"><div class="script-cat-title">If they say tell me more <button class="cbtn" onclick="copyScript(this)">Copy</button></div><div class="script-box">"It\'s a local solar professional I work with. He does a free review based on your actual bill and roof. There\'s also a $50 gift card just for the meeting. Want me to make the intro?"<button class="sc-c" onclick="copyScript(this)">Copy</button></div></div>'],
+  clients:['<div class="script-cat"><div class="script-cat-title">Past client <button class="cbtn" onclick="copyScript(this)">Copy</button></div><div class="script-box">"Hey [Name], hope you\'ve been doing well. Reaching out because I\'ve been connecting past clients with a solar platform I trust. Free, no-pressure review + $50 gift card. Want me to see if your home qualifies?"<button class="sc-c" onclick="copyScript(this)">Copy</button></div></div>'],
+  realtor:['<div class="script-cat"><div class="script-cat-title">Realtor database text <button class="cbtn" onclick="copyScript(this)">Copy</button></div><div class="script-box">"Hey [Name], hope your business is going well. I\'ve been partnering with SolarLink to help homeowners explore solar. It\'s a great reason to reach out to past clients — free consult, $50 gift card, no pressure. Want to learn how it works for your database?"<button class="sc-c" onclick="copyScript(this)">Copy</button></div></div>'],
+  roofer:['<div class="script-cat"><div class="script-cat-title">Roofer script <button class="cbtn" onclick="copyScript(this)">Copy</button></div><div class="script-box">"Hey [Name], while you\'re already on roofs, this might be worth a quick look. I work with SolarLink and we\'re connecting roofers with a simple solar referral program. You refer homeowners, we handle everything, and you earn a commission when they install. Want a 10-minute overview?"<button class="sc-c" onclick="copyScript(this)">Copy</button></div></div>'],
+  mlo:['<div class="script-cat"><div class="script-cat-title">MLO — past borrower <button class="cbtn" onclick="copyScript(this)">Copy</button></div><div class="script-box">"Hey [Name], hope you\'re doing great in the home. I\'ve been sharing a way for homeowners to lower their electric bill using their roof. No big upfront cost for qualified homes. Want me to set up a free review?"<button class="sc-c" onclick="copyScript(this)">Copy</button></div></div>'],
+  social:['<div class="script-cat"><div class="script-cat-title">Facebook / Instagram post <button class="cbtn" onclick="copyScript(this)">Copy</button></div><div class="script-box">"If your electric bill is over $150/month, this might interest you. I\'ve been helping homeowners explore solar through a platform called SolarLink. Free consult + $50 gift card just for meeting with a local solar pro. DM me or check my link: solarlinkpro.com/ref/dlynch"<button class="sc-c" onclick="copyScript(this)">Copy</button></div></div>'],
+  followup:['<div class="script-cat"><div class="script-cat-title">Follow-up — no reply <button class="cbtn" onclick="copyScript(this)">Copy</button></div><div class="script-box">"Hey [Name], just wanted to follow up on the solar thing I mentioned. Totally fine if it\'s not the right time — just wanted to make sure you had the info. Let me know if you ever want me to make that intro."<button class="sc-c" onclick="copyScript(this)">Copy</button></div></div>']
 };
 function selScripts(el,k){document.querySelectorAll('.ptab').forEach(function(t){t.classList.remove('on')});el.classList.add('on');document.getElementById('script-wrap').innerHTML=(SCRIPTS[k]||SCRIPTS.friends).join('');}
 
@@ -1520,7 +1522,7 @@ function buildAI(){
   var key=who+' — '+invite+' — '+tone;
   var msg=AI_MSGS[key]||AI_MSGS.default;
   document.getElementById('ai-result').style.display='block';
-  document.getElementById('ai-output').innerHTML=msg+'<button class="sc-c" onclick="showToast(\'Copied!\')">Copy</button>';
+  document.getElementById('ai-output').innerHTML=msg+'<button class="sc-c" onclick="copyScript(this)">Copy</button>';
   showToast('Message generated! Review before sending.');
   setTimeout(function(){document.getElementById('ai-output').scrollIntoView({behavior:'smooth',block:'center'});},100);
 }
@@ -1573,6 +1575,115 @@ function startTour(){ti=0;renderTour();document.getElementById('tour-ov').classL
 function renderTour(){var s=TOUR[ti];document.getElementById('tour-title').textContent=s.title;document.getElementById('tour-desc').textContent=s.desc;nav(s.s,null);var d=document.getElementById('tdots');d.innerHTML='';TOUR.forEach(function(_,i){var dt=document.createElement('div');dt.className='tdot'+(i===ti?' on':'');d.appendChild(dt);});}
 function nextTour(){ti++;if(ti>=TOUR.length)endTour();else renderTour();}
 function endTour(){document.getElementById('tour-ov').classList.remove('on');}
+
+// ── CLIPBOARD ──
+function copyText(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function(){showToast('Copied to clipboard!');}).catch(function(){showToast('Copied!');});
+  } else { showToast('Copied!'); }
+}
+function copyScript(btn) {
+  var box = btn.closest ? btn.closest('.script-box') : btn.parentElement;
+  var clone = box.cloneNode(true);
+  clone.querySelectorAll('button').forEach(function(b){b.remove();});
+  copyText(clone.textContent.replace(/\s+/g,' ').trim());
+}
+function copyLink(btn) {
+  var lurl = btn.parentElement ? btn.parentElement.querySelector('.lurl') : null;
+  if (lurl) { copyText(lurl.textContent.trim()); return; }
+  var cat = btn.closest ? btn.closest('.script-cat') : null;
+  if (cat) { var box = cat.querySelector('.script-box'); if (box) { var cl=box.cloneNode(true);cl.querySelectorAll('button').forEach(function(b){b.remove();});copyText(cl.textContent.replace(/\s+/g,' ').trim());return; } }
+  var card = btn.closest ? btn.closest('.card') : null;
+  if (card) { var q=card.querySelector('[style*="border-left"]');if(q){copyText(q.textContent.trim());return;} }
+  showToast('Copied!');
+}
+
+// ── DASHBOARD STATS ──
+async function loadDashboardStats() {
+  var res = await db.from('leads').select('status');
+  if (res.error || !res.data) return;
+  var data = res.data;
+  var total = data.length;
+  var installed = data.filter(function(l){return l.status==='Installed'||l.status==='Paid';}).length;
+  var appts = data.filter(function(l){return ['Appt Scheduled','Overview Done','Proposal','Signed','Installed','Paid'].indexOf(l.status)>-1;}).length;
+  var earned = installed * 3500;
+  var stats = document.querySelectorAll('#scr-dashboard .sg .st');
+  if (stats[0]) stats[0].querySelector('.sv').textContent = total;
+  if (stats[1]) stats[1].querySelector('.sv').textContent = appts;
+  if (stats[2]) stats[2].querySelector('.sv').textContent = installed;
+  if (stats[3]) stats[3].querySelector('.sv').textContent = '$'+earned.toLocaleString();
+}
+
+// ── MARK INTRO SENT ──
+async function markIntroSent() {
+  if (currentLeadId) {
+    var res = await db.from('leads').update({status:'Intro Sent'}).eq('id', currentLeadId);
+    if (res.error) { showToast('Error updating status.'); return; }
+  }
+  showToast('✓ Intro confirmed! Status updated.');
+  if (currentLeadId) await loadLeads();
+}
+
+// ── HOMEOWNER FORM ──
+async function submitHomeownerForm() {
+  var name = (document.getElementById('hw-name').value||'').trim();
+  var phone = (document.getElementById('hw-phone').value||'').trim();
+  if (!name || !phone) { showToast('Please enter your name and phone number.'); return; }
+  var parts = name.split(' ');
+  var res = await db.from('leads').insert({
+    first_name: parts[0], last_name: parts.slice(1).join(' '),
+    phone: phone,
+    address: (document.getElementById('hw-addr').value||'').trim(),
+    avg_bill: (document.getElementById('hw-bill').value||'').trim(),
+    status: 'Submitted', partner_name: 'Daniel Lynch', relationship: 'Homeowner self-referral'
+  });
+  if (res.error) { showToast('Error submitting. Please try again.'); return; }
+  nav('giftcard', null);
+}
+
+// ── PARTNER FORM ──
+async function submitPartnerForm() {
+  var name = (document.getElementById('pt-name').value||'').trim();
+  if (!name) { showToast('Please enter your full name.'); return; }
+  var res = await db.from('partners').insert({
+    full_name: name,
+    email: (document.getElementById('pt-email').value||'').trim(),
+    phone: (document.getElementById('pt-phone').value||'').trim(),
+    profession: document.getElementById('pt-profession').value,
+    status: 'Registered', invited_by: 'Daniel Lynch'
+  });
+  if (res.error) { showToast('Error submitting. Please try again.'); return; }
+  showToast('Account created! Your BDP will reach out within 24 hours.');
+}
+
+// ── MY NETWORK / CONTACTS ──
+function showAddContact() {
+  var name = prompt('Contact name:');
+  if (!name || !name.trim()) return;
+  var rel = prompt('Relationship (e.g. Friend, Past client, Neighbor):') || 'Contact';
+  var bill = prompt('Avg electric bill (optional, e.g. $200/mo):') || '';
+  saveContact(name.trim(), rel, bill);
+}
+async function saveContact(name, rel, bill) {
+  var res = await db.from('contacts').insert({name:name,relationship:rel,avg_bill:bill,status:'Not contacted',partner_name:'Daniel Lynch'});
+  if (res.error) { showToast('Error saving contact.'); return; }
+  showToast(name+' added to your network!');
+  loadContacts();
+}
+async function loadContacts() {
+  var res = await db.from('contacts').select('*').order('created_at',{ascending:false});
+  if (res.error || !res.data || res.data.length===0) return;
+  var card = document.querySelector('#scr-network .card');
+  if (!card) return;
+  card.querySelectorAll('.nc[data-db]').forEach(function(el){el.remove();});
+  var addRow = card.querySelector('.nc:last-child');
+  res.data.forEach(function(c) {
+    var ini = c.name.split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2);
+    var div = document.createElement('div'); div.className='nc'; div.setAttribute('data-db','1');
+    div.innerHTML='<div class="nc-av">'+ini+'</div><div><div class="nc-name">'+c.name+'</div><div class="nc-rel">'+(c.relationship||'')+(c.avg_bill?' · '+c.avg_bill:'')+'</div></div><div class="nc-status"><span class="badge b-gray">'+c.status+'</span></div>';
+    card.insertBefore(div, addRow);
+  });
+}
 
 // Initialize
 selScripts(document.querySelectorAll('.ptab')[0],'friends');
