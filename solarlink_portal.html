@@ -840,6 +840,12 @@ textarea{resize:vertical;min-height:76px}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
       <div><div class="pgt" id="d-name" style="margin-bottom:3px">Jane Doe</div><div style="display:flex;gap:8px;align-items:center"><span class="badge" id="d-badge">Intro Pending</span><span style="font-size:11px;color:var(--text3)" id="d-meta">Submitted May 11 · Phoenix AZ</span></div></div>
       <button class="btn bp bsm" onclick="nav('intro',null)">Send 3-Way Intro →</button>
+      <select id="status-select" onchange="updateLeadStatus(this.value)" style="border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--text2);cursor:pointer">
+        <option value="">Update status...</option>
+        <option>Submitted</option><option>Intro Sent</option><option>Contacted</option>
+        <option>Appt Scheduled</option><option>Overview Done</option><option>Proposal</option>
+        <option>Signed</option><option>Installed</option><option>Paid</option>
+      </select>
     </div>
     <div class="two">
       <div>
@@ -1409,8 +1415,12 @@ function nav(id,el){
   document.getElementById('main').scrollTop=0;
   var bd=document.getElementById('bdrop');if(bd)bd.classList.remove('on');
   if(id==='track')loadLeads();
-  if(id==='dashboard')loadDashboardStats();
+  if(id==='dashboard')loadDashboardFull();
   if(id==='network')loadContacts();
+  if(id==='commissions')loadCommissions();
+  if(id==='intro')loadPendingIntros();
+  if(id==='links')loadLinkStats();
+  if(id==='agency')loadAgencyDashboard();
 }
 
 function loginIn(){
@@ -1652,6 +1662,144 @@ db.auth.onAuthStateChange(function(event, session){
   if(event==='SIGNED_IN' && session) onSignIn(session.user);
   if(event==='SIGNED_OUT'){ document.getElementById('login-ov').style.cssText='display:flex;opacity:1'; }
 });
+
+// ── LIVE DASHBOARD ──
+async function loadDashboardFull() {
+  await loadDashboardStats();
+  var res = await db.from('leads').select('*').order('created_at',{ascending:false}).limit(4);
+  if (res.error || !res.data) return;
+  var tl = document.querySelector('#scr-dashboard .tl');
+  if (tl && res.data.length > 0) {
+    tl.innerHTML = res.data.map(function(l) {
+      var name = l.first_name+(l.last_name?' '+l.last_name:'');
+      var date = new Date(l.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      var isPaid = l.status==='Paid'||l.status==='Installed';
+      var dc = isPaid?'td green':'td done';
+      var ic = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+      return '<li class="tli"><div class="'+dc+'">'+ic+'</div><div><div class="tt">'+name+' — '+l.status+'</div><div class="ts">'+date+'</div></div></li>';
+    }).join('');
+  }
+  var pending = res.data.find(function(l){return l.status==='Submitted'||l.status==='Intro Pending';});
+  if (pending) {
+    var pname = pending.first_name+(pending.last_name?' '+pending.last_name:'');
+    var nbaText = document.querySelector('.nba-l .nba-text');
+    if (nbaText) nbaText.textContent = 'Send the 3-way intro for '+pname;
+  }
+  var nameEl = document.querySelector('#scr-dashboard .pgt');
+  if (nameEl) {
+    var hour = new Date().getHours();
+    var greet = hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
+    var uname = document.getElementById('sb-name').textContent;
+    if (uname && uname!=='Signing in...') nameEl.textContent = greet+', '+uname.split(' ')[0];
+  }
+  loadNotifications();
+}
+
+// ── COMMISSIONS ──
+async function loadCommissions() {
+  var res = await db.from('leads').select('*').order('created_at',{ascending:false});
+  if (res.error || !res.data) return;
+  var leads = res.data;
+  var paid = leads.filter(function(l){return l.status==='Paid';});
+  var active = leads.filter(function(l){return ['Appt Scheduled','Overview Done','Proposal','Signed'].indexOf(l.status)>-1;});
+  var stats = document.querySelectorAll('#scr-commissions .sg .st');
+  if (stats[0]) stats[0].querySelector('.sv').textContent='$'+(paid.length*3500).toLocaleString();
+  if (stats[1]) stats[1].querySelector('.sv').textContent='$'+(active.length*3200).toLocaleString();
+  var card = document.querySelector('#scr-commissions .card:last-child');
+  if (!card) return;
+  card.querySelectorAll('[data-db]').forEach(function(el){el.remove();});
+  if (leads.length===0) { var e=document.createElement('div');e.setAttribute('data-db','1');e.style.cssText='font-size:12px;color:var(--text3);padding:12px 0';e.textContent='No referrals yet.';card.appendChild(e);return; }
+  leads.slice(0,10).forEach(function(l) {
+    var name = l.first_name+(l.last_name?' '+l.last_name:'');
+    var date = new Date(l.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    var isPaid = l.status==='Paid'; var isActive = active.indexOf(l)>-1;
+    var amt = isPaid?'$3,500':isActive?'~$3,200':'—';
+    var color = isPaid?'var(--green)':isActive?'var(--amber)':'var(--text3)';
+    var div = document.createElement('div'); div.setAttribute('data-db','1');
+    div.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f8fafc';
+    div.innerHTML='<div><div style="font-size:13px;font-weight:700">'+name+'</div><div style="font-size:11px;color:var(--text3)">'+l.status+' · '+date+'</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:700;color:'+color+'">'+amt+'</div></div>';
+    card.appendChild(div);
+  });
+}
+
+// ── NOTIFICATIONS ──
+async function loadNotifications() {
+  var res = await db.from('leads').select('*').order('created_at',{ascending:false}).limit(5);
+  if (res.error || !res.data || res.data.length===0) return;
+  var bdrop = document.getElementById('bdrop');
+  var hd = bdrop.querySelector('.bdrop-hd');
+  bdrop.querySelectorAll('.bni[data-db]').forEach(function(el){el.remove();});
+  res.data.forEach(function(l) {
+    var name = l.first_name+(l.last_name?' '+l.last_name:'');
+    var date = new Date(l.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    var div = document.createElement('div'); div.className='bni'; div.setAttribute('data-db','1');
+    div.innerHTML='<b>'+name+'</b> — '+l.status+'<div class="bni-t">'+date+'</div>';
+    hd.insertAdjacentElement('afterend', div);
+  });
+  hd.textContent = res.data.length+' recent leads';
+}
+
+// ── PENDING INTROS ──
+async function loadPendingIntros() {
+  var res = await db.from('leads').select('*').in('status',['Submitted','Intro Pending']).order('created_at',{ascending:false});
+  if (res.error) return;
+  var card = document.querySelector('#scr-intro .card:last-child');
+  if (!card) return;
+  card.querySelectorAll('[data-db]').forEach(function(el){el.remove();});
+  if (!res.data || res.data.length===0) {
+    var e=document.createElement('div');e.setAttribute('data-db','1');e.style.cssText='font-size:12px;color:var(--text3);padding:8px 0';e.textContent='No pending intros — great work!';card.appendChild(e);return;
+  }
+  res.data.forEach(function(l) {
+    var name = l.first_name+(l.last_name?' '+l.last_name:'');
+    var date = new Date(l.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    var div = document.createElement('div'); div.setAttribute('data-db','1');
+    div.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f8fafc';
+    div.innerHTML='<div><div style="font-size:13px;font-weight:600">'+name+'</div><div style="font-size:11px;color:var(--text3)">Submitted '+date+' · Alex is waiting</div></div><span class="badge b-red">Pending</span>';
+    card.appendChild(div);
+  });
+}
+
+// ── MY LINKS STATS ──
+async function loadLinkStats() {
+  var res = await db.from('leads').select('status');
+  if (res.error || !res.data) return;
+  var total = res.data.length;
+  var installs = res.data.filter(function(l){return l.status==='Installed'||l.status==='Paid';}).length;
+  var card = document.querySelector('#scr-links .card');
+  if (!card) return;
+  var spans = card.querySelectorAll('b');
+  if (spans[0]) spans[0].textContent = total;
+  if (spans[2]) spans[2].textContent = installs;
+}
+
+// ── AGENCY DASHBOARD ──
+async function loadAgencyDashboard() {
+  var leadsRes = await db.from('leads').select('status');
+  var partnersRes = await db.from('partners').select('status');
+  if (!leadsRes.error && leadsRes.data) {
+    var leads = leadsRes.data;
+    var installs = leads.filter(function(l){return l.status==='Installed'||l.status==='Paid';}).length;
+    var stats = document.querySelectorAll('#scr-agency .st');
+    if (stats[2]) stats[2].querySelector('.sv').textContent = leads.length;
+    if (stats[3]) stats[3].querySelector('.sv').textContent = '$'+(installs*3500).toLocaleString();
+  }
+  if (!partnersRes.error && partnersRes.data) {
+    var partners = partnersRes.data;
+    var stats2 = document.querySelectorAll('#scr-agency .st');
+    if (stats2[0]) stats2[0].querySelector('.sv').textContent = partners.length;
+    if (stats2[1]) stats2[1].querySelector('.sv').textContent = partners.filter(function(p){return p.status!=='Registered';}).length;
+  }
+}
+
+// ── UPDATE LEAD STATUS ──
+async function updateLeadStatus(newStatus) {
+  if (!newStatus || !currentLeadId) return;
+  var res = await db.from('leads').update({status:newStatus}).eq('id',currentLeadId);
+  if (res.error) { showToast('Error updating status.'); return; }
+  showToast('Status updated to: '+newStatus);
+  document.getElementById('status-select').value = '';
+  await openLeadById(currentLeadId);
+}
 
 // ── CLIPBOARD ──
 function copyText(text) {
