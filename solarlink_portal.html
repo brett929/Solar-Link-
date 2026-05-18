@@ -1054,6 +1054,22 @@ textarea{resize:vertical;min-height:76px}
   </div>
 </div>
 
+<!-- Add Contact Modal -->
+<div id="contact-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:900;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:14px;padding:24px;width:min(420px,92vw);box-shadow:0 8px 40px rgba(0,0,0,.18)">
+    <div style="font-size:16px;font-weight:700;margin-bottom:16px">Add Contact</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <input id="cm-name" type="text" placeholder="Full name *" style="border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:13px;width:100%;box-sizing:border-box">
+      <input id="cm-rel" type="text" placeholder="Relationship (e.g. Friend, Past client)" style="border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:13px;width:100%;box-sizing:border-box">
+      <input id="cm-bill" type="text" placeholder="Avg electric bill (optional, e.g. $200/mo)" style="border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:13px;width:100%;box-sizing:border-box">
+    </div>
+    <div style="display:flex;gap:9px;margin-top:16px;justify-content:flex-end">
+      <button class="btn bg bsm" onclick="closeContactModal()">Cancel</button>
+      <button class="btn bp bsm" onclick="submitContactModal()">Add Contact</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ MY NETWORK ═══ -->
 <div class="scr" id="scr-network">
   <div class="tbar"><div class="bc">SolarLink / <b>My Network</b></div><div class="tbar-r"><button class="btn bp bsm" onclick="showAddContact()">+ Add Contact</button></div></div>
@@ -1341,6 +1357,7 @@ var db = supabase.createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFoanZndGpxZ3ZyZ2h4eXRodWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NTkwNTksImV4cCI6MjA5NDQzNTA1OX0.9mVHWAnSwR6P4OF4PdvKRSHCqVp_Xwr0Z1UDU5bhlSE'
 );
 var currentLeadId = null;
+var currentUserName = 'Partner';
 
 async function loadLeads() {
   var tbody = document.querySelector('#scr-track .rt tbody');
@@ -1423,12 +1440,6 @@ function nav(id,el){
   if(id==='agency')loadAgencyDashboard();
 }
 
-function loginIn(){
-  var l=document.getElementById('login-ov');
-  l.style.opacity='0';l.style.transition='opacity .4s';
-  setTimeout(function(){l.style.display='none';},400);
-}
-
 function openLead(i){
   var L=LEADS[i];
   document.getElementById('d-bc').textContent=L.name;
@@ -1484,9 +1495,10 @@ async function submitLead(){
     best_contact_time:document.getElementById('sub-contact').value,
     relationship:document.getElementById('sub-rel').value,
     notes_for_alex:document.getElementById('sub-notes').value.trim(),
-    partner_name:'Daniel Lynch',status:'Submitted'
+    partner_name:currentUserName,status:'Submitted'
   });
-  if(res.error){showToast('Error submitting. Please try again.');console.error(res.error);return;}
+  if(res.error){showToast('Error submitting. Please try again.');return;}
+  ['sub-fn','sub-ln','sub-phone','sub-email','sub-addr','sub-bill','sub-notes'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
   showToast('Referral submitted for '+fn+'! Send the 3-way intro next.');
   setTimeout(function(){nav('intro',null);},500);
 }
@@ -1651,6 +1663,7 @@ function onSignIn(user) {
   l.style.opacity='0'; l.style.transition='opacity .4s';
   setTimeout(function(){l.style.display='none';}, 400);
   var name = (user.user_metadata && user.user_metadata.full_name) || user.email || 'Partner';
+  currentUserName = name;
   var initials = name.split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2) || '?';
   document.getElementById('sb-name').textContent = name;
   document.getElementById('sb-av').textContent = initials;
@@ -1860,7 +1873,7 @@ async function submitHomeownerForm() {
     phone: phone,
     address: (document.getElementById('hw-addr').value||'').trim(),
     avg_bill: (document.getElementById('hw-bill').value||'').trim(),
-    status: 'Submitted', partner_name: 'Daniel Lynch', relationship: 'Homeowner self-referral'
+    status: 'Submitted', partner_name: currentUserName, relationship: 'Homeowner self-referral'
   });
   if (res.error) { showToast('Error submitting. Please try again.'); return; }
   nav('giftcard', null);
@@ -1875,7 +1888,7 @@ async function submitPartnerForm() {
     email: (document.getElementById('pt-email').value||'').trim(),
     phone: (document.getElementById('pt-phone').value||'').trim(),
     profession: document.getElementById('pt-profession').value,
-    status: 'Registered', invited_by: 'Daniel Lynch'
+    status: 'Registered', invited_by: currentUserName
   });
   if (res.error) { showToast('Error submitting. Please try again.'); return; }
   showToast('Account created! Your BDP will reach out within 24 hours.');
@@ -1883,14 +1896,25 @@ async function submitPartnerForm() {
 
 // ── MY NETWORK / CONTACTS ──
 function showAddContact() {
-  var name = prompt('Contact name:');
-  if (!name || !name.trim()) return;
-  var rel = prompt('Relationship (e.g. Friend, Past client, Neighbor):') || 'Contact';
-  var bill = prompt('Avg electric bill (optional, e.g. $200/mo):') || '';
-  saveContact(name.trim(), rel, bill);
+  var m = document.getElementById('contact-modal');
+  document.getElementById('cm-name').value = '';
+  document.getElementById('cm-rel').value = '';
+  document.getElementById('cm-bill').value = '';
+  m.style.display = 'flex';
+}
+function closeContactModal() {
+  document.getElementById('contact-modal').style.display = 'none';
+}
+function submitContactModal() {
+  var name = document.getElementById('cm-name').value.trim();
+  if (!name) { document.getElementById('cm-name').focus(); return; }
+  var rel = document.getElementById('cm-rel').value.trim() || 'Contact';
+  var bill = document.getElementById('cm-bill').value.trim();
+  closeContactModal();
+  saveContact(name, rel, bill);
 }
 async function saveContact(name, rel, bill) {
-  var res = await db.from('contacts').insert({name:name,relationship:rel,avg_bill:bill,status:'Not contacted',partner_name:'Daniel Lynch'});
+  var res = await db.from('contacts').insert({name:name,relationship:rel,avg_bill:bill,status:'Not contacted',partner_name:currentUserName});
   if (res.error) { showToast('Error saving contact.'); return; }
   showToast(name+' added to your network!');
   loadContacts();
